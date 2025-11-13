@@ -18,31 +18,35 @@ export default function CreateEventPage() {
 
   const handleSubmit = async (formData: any) => {
     try {
-      // Call API to create event
+      const session = localStorage.getItem('auth_session');
+      const token = session ? JSON.parse(session).accessToken : null;
+
+      const form = new FormData();
+      form.append('name', formData.name);
+      form.append('category', formData.category);
+      form.append('location', formData.location);
+      form.append('audienceSize', formData.audienceSize);
+      form.append('date', formData.date);
+      form.append('description', formData.description);
+      form.append('sponsorshipRequirements', formData.sponsorshipRequirements);
+      
+      if (formData.banner) {
+        form.append('banner', formData.banner);
+      }
+
       const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: formData.name,
-          category: formData.category,
-          location: formData.location,
-          audienceSize: parseInt(formData.audienceSize),
-          date: formData.date,
-          description: formData.description,
-          sponsorshipRequirements: formData.sponsorshipRequirements,
-          // TODO: Handle banner upload separately
-        }),
+        body: form,
       });
 
       if (!response.ok) {
         throw new Error('Failed to create event');
       }
 
-      const event = await response.json();
-      
-      // Show success message
+      await response.json();
       setShowSuccess(true);
       
       // Redirect to dashboard after a short delay
@@ -51,7 +55,8 @@ export default function CreateEventPage() {
       }, 2000);
     } catch (error) {
       console.error('Error creating event:', error);
-      alert('Failed to create event. Please try again.');
+      const errorMsg = error instanceof Error ? error.message : 'Failed to create event';
+      alert(errorMsg);
     }
   };
 

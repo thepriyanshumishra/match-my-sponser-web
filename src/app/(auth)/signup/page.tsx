@@ -94,6 +94,14 @@ export default function SignupPage() {
         return;
       }
 
+      // Store session in localStorage
+      const { setSession } = await import('@/lib/auth');
+      setSession({
+        user: data.user,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      });
+
       // Redirect based on user role
       if (data.user.role === 'organizer') {
         router.push('/organizer/dashboard');

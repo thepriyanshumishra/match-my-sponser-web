@@ -1,18 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Event, EventCategory, EventStatus } from '@/types/event';
-
-// Mock database - in production, this would be replaced with actual database calls
-let mockEvents: Event[] = [];
+import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Get user ID from session
-    const userId = 'user-1'; // Mock user ID
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
 
-    // Filter events by organizer
-    const userEvents = mockEvents.filter(event => event.organizerId === userId);
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured' },
+        { status: 503 }
+      );
+    }
 
-    return NextResponse.json(userEvents, { status: 200 });
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
+    const { data: events, error } = await supabase
+      .from('events')
+      .select('*')
+      .eq('organizer_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching events:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch events' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(events || [], { status: 200 });
   } catch (error) {
     console.error('Error fetching events:', error);
     return NextResponse.json(
@@ -24,29 +56,49 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const formData = await request.formData();
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
 
-    // Validate required fields
-    const requiredFields = [
-      'name',
-      'category',
-      'location',
-      'audienceSize',
-      'date',
-      'description',
-      'sponsorshipRequirements',
-    ];
-
-    for (const field of requiredFields) {
-      if (!body[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
-      }
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase not configured' },
+        { status: 503 }
+      );
     }
 
-    // Validate category
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401 }
+      );
+    }
+
+    const name = formData.get('name') as string;
+    const category = formData.get('category') as string;
+    const location = formData.get('location') as string;
+    const audienceSize = formData.get('audienceSize') as string;
+    const date = formData.get('date') as string;
+    const description = formData.get('description') as string;
+    const sponsorshipRequirements = formData.get('sponsorshipRequirements') as string;
+    const banner = formData.get('banner') as File | null;
+
+    if (!name || !category || !location || !audienceSize || !date || !description || !sponsorshipRequirements) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
     const validCategories: EventCategory[] = [
       'college-fest',
       'competition',
@@ -56,23 +108,22 @@ export async function POST(request: NextRequest) {
       'workshop',
     ];
 
-    if (!validCategories.includes(body.category)) {
+    if (!validCategories.includes(category as EventCategory)) {
       return NextResponse.json(
         { error: 'Invalid event category' },
         { status: 400 }
       );
     }
 
-    // Validate audience size
-    if (typeof body.audienceSize !== 'number' || body.audienceSize <= 0) {
+    const audienceSizeNum = parseInt(audienceSize);
+    if (isNaN(audienceSizeNum) || audienceSizeNum <= 0) {
       return NextResponse.json(
         { error: 'Audience size must be a positive number' },
         { status: 400 }
       );
     }
 
-    // Validate date is in the future
-    const eventDate = new Date(body.date);
+    const eventDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -83,30 +134,53 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Get user ID from session
-    const userId = 'user-1'; // Mock user ID
+    let bannerUrl: string | null = null;
+    if (banner && banner.size > 0) {
+      const fileExt = banner.name.split('.').pop();
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `event-banners/${fileName}`;
 
-    // Create new event
-    const newEvent: Event = {
-      id: `event-${Date.now()}`,
-      organizerId: userId,
-      name: body.name,
-      category: body.category,
-      location: body.location,
-      audienceSize: body.audienceSize,
-      date: eventDate,
-      description: body.description,
-      sponsorshipRequirements: body.sponsorshipRequirements,
-      bannerUrl: body.bannerUrl,
-      status: 'published' as EventStatus,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      const { error: uploadError } = await supabase.storage
+        .from('event-banners')
+        .upload(filePath, banner, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-    // Save to mock database
-    mockEvents.push(newEvent);
+      if (!uploadError) {
+        const { data } = supabase.storage
+          .from('event-banners')
+          .getPublicUrl(filePath);
+        bannerUrl = data.publicUrl;
+      }
+    }
 
-    return NextResponse.json(newEvent, { status: 201 });
+    const { data: event, error } = await supabase
+      .from('events')
+      .insert({
+        organizer_id: user.id,
+        name,
+        category,
+        location,
+        audience_size: audienceSizeNum,
+        date: eventDate.toISOString().split('T')[0],
+        description,
+        sponsorship_requirements: sponsorshipRequirements,
+        banner_url: bannerUrl,
+        status: 'published',
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating event:', error);
+      return NextResponse.json(
+        { error: 'Failed to create event' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(event, { status: 201 });
   } catch (error) {
     console.error('Error creating event:', error);
     return NextResponse.json(

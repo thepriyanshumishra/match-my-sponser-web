@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +14,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if Supabase is configured
     if (!supabase) {
       return NextResponse.json(
-        { error: 'Authentication service not configured. Please set up Supabase credentials.' },
+        { error: 'Supabase not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local' },
         { status: 503 }
       );
     }

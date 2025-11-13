@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { GlassCard } from '@/components/shared/GlassCard';
@@ -36,6 +36,35 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Create demo accounts on component mount
+  useEffect(() => {
+    const createDemoAccounts = () => {
+      const existingAccounts = localStorage.getItem('demo_accounts');
+      if (!existingAccounts) {
+        const demoAccounts = [
+          {
+            id: 'demo-organizer-1',
+            email: 'organizer@demo.com',
+            name: 'Alex Johnson',
+            role: 'organizer',
+            password: 'demo123',
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: 'demo-sponsor-1',
+            email: 'sponsor@demo.com',
+            name: 'Sarah Chen',
+            role: 'sponsor',
+            password: 'demo123',
+            createdAt: new Date().toISOString()
+          }
+        ];
+        localStorage.setItem('demo_accounts', JSON.stringify(demoAccounts));
+      }
+    };
+    createDemoAccounts();
+  }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -47,6 +76,41 @@ export default function LoginPage() {
     setErrors({});
 
     try {
+      // Check demo accounts first
+      const demoAccountsStr = localStorage.getItem('demo_accounts');
+      if (demoAccountsStr) {
+        const demoAccounts = JSON.parse(demoAccountsStr);
+        const demoAccount = demoAccounts.find(
+          (acc: any) => acc.email === formData.email && acc.password === formData.password
+        );
+        
+        if (demoAccount) {
+          // Store session for demo account
+          const { setSession } = await import('@/lib/auth');
+          setSession({
+            user: {
+              id: demoAccount.id,
+              email: demoAccount.email,
+              name: demoAccount.name,
+              role: demoAccount.role,
+              createdAt: new Date(demoAccount.createdAt),
+              updatedAt: new Date()
+            },
+            accessToken: 'demo-token',
+            refreshToken: 'demo-refresh'
+          });
+
+          // Redirect based on role
+          if (demoAccount.role === 'organizer') {
+            router.push('/organizer/dashboard');
+          } else if (demoAccount.role === 'sponsor') {
+            router.push('/sponsor/dashboard');
+          }
+          return;
+        }
+      }
+
+      // Try regular API login
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -65,6 +129,14 @@ export default function LoginPage() {
         setErrors({ form: data.error || 'Login failed. Please try again.' });
         return;
       }
+
+      // Store session in localStorage
+      const { setSession } = await import('@/lib/auth');
+      setSession({
+        user: data.user,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      });
 
       // Redirect based on user role
       if (data.user.role === 'organizer') {
@@ -157,6 +229,39 @@ export default function LoginPage() {
             </Link>
           </div>
         </form>
+
+        {/* Demo Account Quick Login - Remove in production */}
+        <div className="mt-6 pt-6 border-t border-white/20">
+          <p className="text-sm text-gray-600 text-center mb-3">Quick Demo Login:</p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setFormData({
+                  email: 'organizer@demo.com',
+                  password: 'demo123',
+                  rememberMe: false
+                });
+              }}
+              className="flex-1 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-700 rounded-lg text-sm font-medium transition-colors"
+            >
+              👤 Organizer
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setFormData({
+                  email: 'sponsor@demo.com',
+                  password: 'demo123',
+                  rememberMe: false
+                });
+              }}
+              className="flex-1 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+            >
+              🏢 Sponsor
+            </button>
+          </div>
+        </div>
       </GlassCard>
     </div>
   );

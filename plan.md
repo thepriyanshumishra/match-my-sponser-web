@@ -52,28 +52,34 @@ Consistent spacing & visual rhythm
 
 Light mode primary (Dark can be added later)
 
-🧱 3. Tech Stack
+🧱 3. Tech Stack (100% FREE)
 Frontend
 
-Next.js (App Router)
+Next.js 16 (App Router)
 
-Tailwind CSS
+Tailwind CSS v4
 
 Framer Motion (animations)
 
-React Icons / Lucide Icons
+Lucide Icons
 
-TypeScript (optional)
+TypeScript
 
-Backend
+Backend (100% FREE)
 
-Next.js API routes (for now)
+Supabase Free Tier (500MB database, 1GB storage, 50K MAU auth)
 
-Future: Supabase/Firebase integrations
+Next.js API routes
 
-Deployment
+Supabase Realtime for live features
 
-Vercel (auto deployments via GitHub)
+Supabase Storage for file uploads
+
+Deployment (FREE)
+
+Vercel Hobby Plan (free hosting)
+
+Auto deployments via GitHub
 
 🌐 4. Site Structure
 Pages

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,10 +29,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if Supabase is configured
     if (!supabase) {
       return NextResponse.json(
-        { error: 'Authentication service not configured. Please set up Supabase credentials.' },
+        { error: 'Supabase not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local' },
         { status: 503 }
       );
     }
@@ -69,38 +68,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user profile in profiles table
-    const { data: profile, error: profileError } = await supabase
+    // Profile is auto-created by trigger, fetch it
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const { data: profile } = await supabase
       .from('profiles')
-      .insert({
-        id: authData.user.id,
-        email,
-        name,
-        role,
-      })
-      .select()
+      .select('*')
+      .eq('id', authData.user.id)
       .single();
 
-    if (profileError) {
-      // If profile creation fails, we should clean up the auth user
-      // but for simplicity, we'll just return an error
-      console.error('Profile creation error:', profileError);
-      return NextResponse.json(
-        { error: 'Failed to create user profile' },
-        { status: 500 }
-      );
-    }
-
-    // Return user data and tokens
     return NextResponse.json({
       user: {
-        id: profile.id,
-        email: profile.email,
-        name: profile.name,
-        role: profile.role,
-        avatar: profile.avatar_url,
-        createdAt: profile.created_at,
-        updatedAt: profile.updated_at,
+        id: authData.user.id,
+        email: authData.user.email || email,
+        name: profile?.name || name,
+        role: profile?.role || role,
+        avatar: profile?.avatar_url,
+        createdAt: authData.user.created_at,
+        updatedAt: authData.user.updated_at,
       },
       accessToken: authData.session?.access_token,
       refreshToken: authData.session?.refresh_token,
