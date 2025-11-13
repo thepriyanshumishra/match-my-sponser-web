@@ -3,9 +3,9 @@
 import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { GlassCard } from '@/components/shared/GlassCard';
+import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
-import { GlassButton } from '@/components/shared/GlassButton';
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +16,7 @@ export default function LoginPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Get redirect URL from query params
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
@@ -161,10 +162,11 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <GlassCard className="w-full max-w-md" padding="lg">
+
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">Welcome Back</h1>
+          <p className="text-gray-600">Sign in to continue</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -195,14 +197,23 @@ export default function LoginPage() {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
-            <Input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              placeholder="••••••••"
-              className={errors.password ? 'border-red-300' : ''}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="••••••••"
+                className={errors.password ? 'border-red-300' : ''}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">{errors.password}</p>
             )}
@@ -221,56 +232,22 @@ export default function LoginPage() {
             </label>
           </div>
 
-          <GlassButton
+          <button
             type="submit"
-            variant="primary"
-            className="w-full"
             disabled={isLoading}
+            className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
-          </GlassButton>
+          </button>
 
           <div className="text-center text-sm">
             <span className="text-gray-600">Don't have an account? </span>
-            <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 font-semibold">
               Sign up
             </Link>
           </div>
         </form>
-
-        {/* Demo Account Quick Login - Remove in production */}
-        <div className="mt-6 pt-6 border-t border-white/20">
-          <p className="text-sm text-gray-600 text-center mb-3">Quick Demo Login:</p>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                setFormData({
-                  email: 'organizer@demo.com',
-                  password: 'demo123',
-                  rememberMe: false
-                });
-              }}
-              className="flex-1 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-700 rounded-lg text-sm font-medium transition-colors"
-            >
-              👤 Organizer
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setFormData({
-                  email: 'sponsor@demo.com',
-                  password: 'demo123',
-                  rememberMe: false
-                });
-              }}
-              className="flex-1 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-700 rounded-lg text-sm font-medium transition-colors"
-            >
-              🏢 Sponsor
-            </button>
-          </div>
-        </div>
-      </GlassCard>
+      </div>
     </div>
   );
 }

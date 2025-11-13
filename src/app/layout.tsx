@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   description: "A modern platform connecting event organizers with sponsors. Find the perfect match for your event or discover sponsorship opportunities.",
   keywords: ['event sponsorship', 'sponsor matching', 'event organizer', 'sponsor platform'],
   authors: [{ name: 'Match My Sponsor' }],
-  manifest: '/manifest.json',
+  manifest: '/manifest.webmanifest',
 };
 
 export default function RootLayout({
@@ -27,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://qmbaavofgutyktmeivaf.supabase.co" />
-      </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -41,7 +40,9 @@ export default function RootLayout({
         </div>
         
         <div className="relative z-10">
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </div>
       </body>
     </html>
