@@ -17,6 +17,10 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  // Get redirect URL from query params
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const redirectUrl = searchParams.get('redirect');
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -100,12 +104,13 @@ export default function LoginPage() {
             refreshToken: 'demo-refresh'
           });
 
-          // Redirect based on role
-          if (demoAccount.role === 'organizer') {
-            router.push('/organizer/dashboard');
-          } else if (demoAccount.role === 'sponsor') {
-            router.push('/sponsor/dashboard');
-          }
+          // Use redirect URL if provided, otherwise default dashboard
+          const demoRedirectPath = redirectUrl || 
+            (demoAccount.role === 'organizer' 
+              ? '/organizer/dashboard' 
+              : '/sponsor/dashboard');
+          
+          window.location.href = demoRedirectPath;
           return;
         }
       }
@@ -140,10 +145,11 @@ export default function LoginPage() {
 
       console.log('Login successful, redirecting to:', data.user.role);
 
-      // Redirect based on user role
-      const redirectPath = data.user.role === 'organizer' 
-        ? '/organizer/dashboard' 
-        : '/sponsor/dashboard';
+      // Use redirect URL if provided, otherwise default dashboard
+      const redirectPath = redirectUrl || 
+        (data.user.role === 'organizer' 
+          ? '/organizer/dashboard' 
+          : '/sponsor/dashboard');
       
       window.location.href = redirectPath;
     } catch (error) {
