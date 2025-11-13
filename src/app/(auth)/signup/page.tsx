@@ -102,12 +102,14 @@ export default function SignupPage() {
         refreshToken: data.refreshToken,
       });
 
+      console.log('Session stored, redirecting to:', data.user.role);
+
       // Redirect based on user role
-      if (data.user.role === 'organizer') {
-        router.push('/organizer/dashboard');
-      } else if (data.user.role === 'sponsor') {
-        router.push('/sponsor/dashboard');
-      }
+      const redirectPath = data.user.role === 'organizer' 
+        ? '/organizer/dashboard' 
+        : '/sponsor/dashboard';
+      
+      window.location.href = redirectPath;
     } catch (error) {
       setErrors({ form: 'An unexpected error occurred. Please try again.' });
     } finally {
