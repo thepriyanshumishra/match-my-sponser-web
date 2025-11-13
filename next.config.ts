@@ -13,9 +13,15 @@ const nextConfig: NextConfig = {
         hostname: '**.supabase.co',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
+  },
+  compress: true,
+  poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
 };
 
