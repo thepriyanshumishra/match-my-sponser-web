@@ -21,99 +21,86 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
-      {/* Pastel gradient background with floating blob shapes */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#ffecd2] via-[#fcb69f] to-[#ff9a9e] opacity-60" />
-      
-      {/* Floating blob shapes */}
-      <motion.div
-        className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -50, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute top-40 right-10 w-96 h-96 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-        animate={{
-          x: [0, -100, 0],
-          y: [0, 100, 0],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute -bottom-20 left-1/3 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-        animate={{
-          x: [0, 50, 0],
-          y: [0, -100, 0],
-        }}
-        transition={{
-          duration: 22,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-
-      {/* Large glass card backdrop */}
-      <div className="relative z-10 w-full max-w-6xl">
-        <GlassCard blur="lg" padding="lg" className="backdrop-blur-2xl">
+    <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
+        <motion.div
+          className="text-center"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
+          {/* Badge */}
           <motion.div
-            className="text-center"
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg mb-8"
+            variants={fadeInUp}
           >
-            {/* Large heading with gradient text */}
-            <motion.h1
-              className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent leading-tight"
-              variants={fadeInUp}
-            >
-              Match My Sponsor
-            </motion.h1>
-
-            {/* Sub-heading with muted color */}
-            <motion.p
-              className="text-xl md:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto"
-              variants={fadeInUp}
-            >
-              Connect event organizers with perfect sponsors. Streamline sponsorship discovery, 
-              communication, and deliverables management—all in one beautiful platform.
-            </motion.p>
-
-            {/* CTA buttons */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-              variants={fadeInUp}
-            >
-              <GlassButton
-                variant="primary"
-                size="lg"
-                onClick={() => (window.location.href = '/signup')}
-              >
-                Get Started
-              </GlassButton>
-              <GlassButton
-                variant="secondary"
-                size="lg"
-                onClick={() => {
-                  const featuresSection = document.getElementById('features');
-                  featuresSection?.scrollIntoView({ behavior: 'smooth' });
-                }}
-              >
-                Learn More
-              </GlassButton>
-            </motion.div>
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-gray-700">100% Free • No Credit Card Required</span>
           </motion.div>
-        </GlassCard>
+
+          {/* Main heading */}
+          <motion.h1
+            className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 text-gray-900 leading-tight"
+            variants={fadeInUp}
+          >
+            Find Your Perfect
+            <br />
+            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Sponsor Match
+            </span>
+          </motion.h1>
+
+          {/* Sub-heading */}
+          <motion.p
+            className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+            variants={fadeInUp}
+          >
+            Connect event organizers with sponsors through AI-powered matching.
+            Streamline discovery, communication, and collaboration.
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            variants={fadeInUp}
+          >
+            <button
+              onClick={() => (window.location.href = '/signup')}
+              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200"
+            >
+              Get Started Free →
+            </button>
+            <button
+              onClick={() => {
+                const featuresSection = document.getElementById('features');
+                featuresSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-8 py-4 bg-white/80 backdrop-blur-xl border border-gray-200 text-gray-700 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+            >
+              See How It Works
+            </button>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            className="flex flex-wrap justify-center gap-8 md:gap-12"
+            variants={fadeInUp}
+          >
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">500+</div>
+              <div className="text-sm text-gray-600">Events Matched</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">1000+</div>
+              <div className="text-sm text-gray-600">Active Users</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">95%</div>
+              <div className="text-sm text-gray-600">Success Rate</div>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
