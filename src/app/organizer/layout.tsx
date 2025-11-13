@@ -6,9 +6,9 @@ export default function OrganizerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#ffecd2] via-[#fcb69f] to-[#ff9a9e]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Sidebar role="organizer" />
-      <main className="ml-64 p-8">
+      <main className="ml-72 p-8">
         <div className="max-w-7xl mx-auto">
           {children}
         </div>

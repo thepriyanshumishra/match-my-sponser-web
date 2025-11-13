@@ -36,9 +36,9 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
   };
 
   return (
-    <GlassCard padding="sm" hover className="overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-200">
       {/* Event Banner */}
-      <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4">
+      <div className="relative w-full h-48 overflow-hidden">
         {event.bannerUrl ? (
           <Image
             src={event.bannerUrl}
@@ -55,7 +55,7 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
         
         {/* Category Badge */}
         <div className="absolute top-3 left-3">
-          <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-gray-800">
+          <span className="px-3 py-1 rounded-full bg-white text-xs font-semibold text-gray-900 shadow-md">
             {categoryLabels[event.category] || event.category}
           </span>
         </div>
@@ -63,9 +63,9 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
         {/* Match Score Badge */}
         {showMatchScore && matchScore !== undefined && (
           <div className="absolute top-3 right-3">
-            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm">
-              <Sparkles size={14} className={clsx('text-white', getMatchScoreColor(matchScore))} />
-              <span className="text-xs font-bold text-gray-800">{matchScore}% Match</span>
+            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 shadow-md">
+              <Sparkles size={14} className="text-white" />
+              <span className="text-xs font-bold text-white">{matchScore}% Match</span>
             </div>
           </div>
         )}
@@ -77,7 +77,7 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
       </div>
 
       {/* Event Details */}
-      <div className="space-y-3 mb-4">
+      <div className="p-4 space-y-3">
         <div className="flex items-center gap-2 text-sm text-gray-700">
           <Calendar size={16} className="text-gray-500" />
           <span>{formattedDate}</span>
@@ -96,15 +96,15 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
 
       {/* Action Button */}
       {onClick && (
-        <GlassButton
-          variant="primary"
-          size="sm"
-          onClick={onClick}
-          className="w-full"
-        >
-          View Details
-        </GlassButton>
+        <div className="px-4 pb-4">
+          <button
+            onClick={onClick}
+            className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200"
+          >
+            View Details
+          </button>
+        </div>
       )}
-    </GlassCard>
+    </div>
   );
 }
