@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+import { AuthProvider } from '@/components/providers/AuthProvider';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -131,7 +132,9 @@ export default function RootLayout({
         
         <div className="relative z-10">
           <ErrorBoundary>
-            {children}
+            <AuthProvider>
+              {children}
+            </AuthProvider>
           </ErrorBoundary>
         </div>
         <Analytics />

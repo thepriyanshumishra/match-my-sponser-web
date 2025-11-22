@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 // Using CSS transitions instead of framer-motion for better performance
 import {
   LayoutDashboard,
@@ -17,6 +17,7 @@ import {
   X,
 } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useAuth } from '@/components/providers/AuthProvider';
 
 interface SidebarProps {
   role: 'organizer' | 'sponsor';
@@ -45,7 +46,7 @@ const sponsorNavItems: NavItem[] = [
 
 export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
+  const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const navItems = role === 'organizer' ? organizerNavItems : sponsorNavItems;
@@ -57,13 +58,8 @@ export function Sidebar({ role }: SidebarProps) {
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      router.push('/login');
-    } catch (error) {
-      router.push('/login');
-    }
+  const handleLogout = () => {
+    logout();
   };
 
   return (

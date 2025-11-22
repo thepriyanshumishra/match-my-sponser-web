@@ -16,12 +16,17 @@ export interface AuthSession {
   user: User;
   accessToken: string;
   refreshToken: string;
+  expiresAt: number; // Unix timestamp
 }
 
-// Store session in localStorage
-export const setSession = (session: AuthSession) => {
+// Store session in localStorage with 30-day expiration
+export const setSession = (session: Omit<AuthSession, 'expiresAt'>) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('auth_session', JSON.stringify(session));
+    const sessionWithExpiry: AuthSession = {
+      ...session,
+      expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
+    };
+    localStorage.setItem('auth_session', JSON.stringify(sessionWithExpiry));
   }
 };
 
@@ -69,7 +74,13 @@ export const verifySession = async (): Promise<boolean> => {
   const session = getSession();
   if (!session) return false;
 
-  // If Supabase is not configured, just check if session exists
+  // Check if session has expired
+  if (Date.now() > session.expiresAt) {
+    clearSession();
+    return false;
+  }
+
+  // If Supabase is not configured, just check expiration
   if (!supabase) {
     return true;
   }

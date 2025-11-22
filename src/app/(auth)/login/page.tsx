@@ -7,10 +7,13 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { AnimatedBackground } from '@/components/shared/AnimatedBackground';
+import { useAuth } from '@/components/providers/AuthProvider';
+import { setSession } from '@/lib/auth';
 
 
 export default function LoginPage() {
   const router = useRouter();
+  const { user, loading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -23,6 +26,16 @@ export default function LoginPage() {
   // Get redirect URL from query params
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const redirectUrl = searchParams.get('redirect');
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!loading && user) {
+      const dashboardPath = user.role === 'organizer' 
+        ? '/organizer/dashboard' 
+        : '/sponsor/dashboard';
+      router.replace(dashboardPath);
+    }
+  }, [user, loading, router]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -93,7 +106,6 @@ export default function LoginPage() {
         
         if (demoAccount) {
           // Store session for demo account
-          const { setSession } = await import('@/lib/auth');
           setSession({
             user: {
               id: demoAccount.id,
@@ -139,7 +151,6 @@ export default function LoginPage() {
       }
 
       // Store session in localStorage
-      const { setSession } = await import('@/lib/auth');
       setSession({
         user: data.user,
         accessToken: data.accessToken,
