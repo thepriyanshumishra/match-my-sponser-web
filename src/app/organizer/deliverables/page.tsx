@@ -105,38 +105,38 @@ export default function OrganizerDeliverablesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
+    <div className="space-y-4 sm:space-y-6 p-4 lg:p-0">
+      <div className="glass-card p-4 sm:p-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
           Deliverables
         </h1>
-        <p className="text-gray-600">Upload proof of completed sponsorship deliverables</p>
+        <p className="text-gray-600 text-sm sm:text-base">Upload proof of completed sponsorship deliverables</p>
       </div>
 
       {deliverables.length === 0 ? (
-        <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg p-12 text-center">
-          <Upload size={48} className="mx-auto text-gray-400 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No deliverables yet</h3>
-          <p className="text-gray-600">Deliverables will appear here once you match with sponsors</p>
+        <div className="glass-card p-8 sm:p-12 text-center">
+          <Upload size={40} className="sm:w-12 sm:h-12 mx-auto text-gray-400 mb-4" />
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">No deliverables yet</h3>
+          <p className="text-gray-600 text-sm sm:text-base">Deliverables will appear here once you match with sponsors</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {deliverables.map((deliverable) => (
-            <div key={deliverable.id} className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg p-6 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-xl font-semibold text-gray-900">{deliverable.title}</h3>
+            <div key={deliverable.id} className="glass-card p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">{deliverable.title}</h3>
                     {getStatusIcon(deliverable.status)}
                   </div>
-                  <p className="text-gray-600 mb-2">{deliverable.description}</p>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <p className="text-gray-600 mb-2 text-sm sm:text-base">{deliverable.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-gray-500">
                     <span>Sponsor: {deliverable.sponsorName}</span>
-                    <span>•</span>
+                    <span className="hidden sm:inline">•</span>
                     <span>Due: {new Date(deliverable.dueDate).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(deliverable.status)}`}>
+                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium self-start ${getStatusColor(deliverable.status)}`}>
                   {deliverable.status.charAt(0).toUpperCase() + deliverable.status.slice(1)}
                 </span>
               </div>
@@ -157,13 +157,13 @@ export default function OrganizerDeliverablesPage() {
                     />
                     <label
                       htmlFor={`file-${deliverable.id}`}
-                      className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl cursor-pointer transition-all ${
+                      className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl cursor-pointer transition-all text-sm sm:text-base touch-manipulation ${
                         uploadingId === deliverable.id
                           ? 'bg-gray-300 cursor-not-allowed'
                           : 'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white hover:shadow-lg'
                       }`}
                     >
-                      <Upload size={20} />
+                      <Upload size={16} className="sm:w-5 sm:h-5" />
                       {uploadingId === deliverable.id ? 'Uploading...' : 'Upload Proof'}
                     </label>
                   </label>
@@ -172,19 +172,19 @@ export default function OrganizerDeliverablesPage() {
 
               {deliverable.proofUrl && (
                 <div className="mt-4">
-                  <p className="text-sm text-gray-600 mb-2">Uploaded Proof:</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-2">Uploaded Proof:</p>
                   <img
                     src={deliverable.proofUrl}
                     alt="Proof"
-                    className="w-full max-w-md rounded-xl border border-white/20"
+                    className="w-full max-w-sm sm:max-w-md rounded-xl border border-white/20"
                   />
                 </div>
               )}
 
               {deliverable.feedback && (
-                <div className="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
-                  <p className="text-sm font-medium text-yellow-800 mb-1">Sponsor Feedback:</p>
-                  <p className="text-sm text-yellow-700">{deliverable.feedback}</p>
+                <div className="mt-4 p-3 sm:p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                  <p className="text-xs sm:text-sm font-medium text-yellow-800 mb-1">Sponsor Feedback:</p>
+                  <p className="text-xs sm:text-sm text-yellow-700">{deliverable.feedback}</p>
                 </div>
               )}
             </div>

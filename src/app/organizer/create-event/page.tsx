@@ -66,11 +66,11 @@ export default function CreateEventPage() {
 
   if (showSuccess) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh] p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
+          className="text-center glass-card p-8 sm:p-12"
         >
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mx-auto mb-6">
             <svg
@@ -87,35 +87,36 @@ export default function CreateEventPage() {
               />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Event Created!</h2>
-          <p className="text-gray-600">Redirecting to your dashboard...</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Event Created!</h2>
+          <p className="text-gray-600 text-sm sm:text-base">Redirecting to your dashboard...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 lg:p-0">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
+        className="glass-card p-4 sm:p-6"
       >
         <motion.button
           onClick={handleCancel}
-          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4 transition-colors group"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4 transition-colors group touch-manipulation"
           whileHover={{ x: -5 }}
           whileTap={{ scale: 0.95 }}
         >
-          <ArrowLeft size={20} className="group-hover:text-indigo-600 transition-colors" />
-          <span className="group-hover:text-indigo-600 transition-colors">Back to Dashboard</span>
+          <ArrowLeft size={18} className="sm:w-5 sm:h-5 group-hover:text-indigo-600 transition-colors" />
+          <span className="group-hover:text-indigo-600 transition-colors text-sm sm:text-base">Back to Dashboard</span>
         </motion.button>
         
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
           Create New Event
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-sm sm:text-base">
           Fill in the details below to create your event and start finding sponsors
         </p>
       </motion.div>
@@ -125,6 +126,7 @@ export default function CreateEventPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.15 }}
+        className="glass-card"
       >
         <EventForm onSubmit={handleSubmit} onCancel={handleCancel} />
       </motion.div>

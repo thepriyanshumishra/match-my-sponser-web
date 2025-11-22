@@ -36,7 +36,10 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
   };
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-200">
+    <div 
+      className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer"
+      onClick={onClick}
+    >
       {/* Event Banner */}
       <div className="relative w-full h-40 sm:h-48 overflow-hidden">
         {event.bannerUrl ? (
@@ -98,8 +101,11 @@ export function EventCard({ event, onClick, showMatchScore = false, matchScore }
       {onClick && (
         <div className="px-3 sm:px-4 pb-3 sm:pb-4">
           <button
-            onClick={onClick}
-            className="w-full px-3 sm:px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+            className="w-full px-3 sm:px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 text-sm sm:text-base touch-manipulation"
           >
             View Details
           </button>

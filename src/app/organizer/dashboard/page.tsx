@@ -112,7 +112,12 @@ export default function OrganizerDashboard() {
   }, []);
 
   const handleEventClick = (eventId: string) => {
-    router.push(`/organizer/events/${eventId}`);
+    // For now, just show event details in an alert or modal
+    // Later can be replaced with actual event details page
+    const event = events.find(e => e.id === eventId);
+    if (event) {
+      alert(`Event: ${event.name}\nLocation: ${event.location}\nDate: ${new Date(event.date).toLocaleDateString()}\nAudience: ${event.audienceSize} people`);
+    }
   };
 
   if (loading) {
@@ -215,6 +220,7 @@ export default function OrganizerDashboard() {
                 <EventCard
                   event={event}
                   onClick={() => handleEventClick(event.id)}
+                  showMatchScore={false}
                 />
               </motion.div>
             ))}
