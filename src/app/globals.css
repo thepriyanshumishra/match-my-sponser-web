@@ -44,10 +44,14 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", sans-serif;
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-display: swap;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Glass UI Utility Classes */
@@ -129,10 +133,20 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Performance Optimizations */
+/* Critical Performance Optimizations */
 * {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+/* Preload critical resources */
+.critical-resource {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
+/* Optimize initial paint */
+.above-fold {
+  contain: layout style paint;
 }
 
 .glass-card,
@@ -145,6 +159,8 @@ html {
 .animate-blob {
   will-change: transform;
   transform: translateZ(0); /* Force hardware acceleration */
+  contain: strict;
+  animation-fill-mode: both;
 }
 
 /* Optimize backdrop-filter for better performance */
