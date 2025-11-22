@@ -1,4 +1,4 @@
-// Simple auth utilities without persistent sessions
+// Simple auth utilities with basic localStorage
 export interface User {
   id: string;
   email: string;
@@ -6,25 +6,37 @@ export interface User {
   role: 'organizer' | 'sponsor';
 }
 
-// Simple session storage (no persistence)
-let currentUser: User | null = null;
-
 export const setCurrentUser = (user: User) => {
-  currentUser = user;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('current_user', JSON.stringify(user));
+  }
 };
 
 export const getCurrentUser = (): User | null => {
-  return currentUser;
+  if (typeof window !== 'undefined') {
+    const userStr = localStorage.getItem('current_user');
+    if (userStr) {
+      try {
+        return JSON.parse(userStr);
+      } catch {
+        return null;
+      }
+    }
+  }
+  return null;
 };
 
 export const clearCurrentUser = () => {
-  currentUser = null;
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('current_user');
+  }
 };
 
 export const isAuthenticated = (): boolean => {
-  return currentUser !== null;
+  return getCurrentUser() !== null;
 };
 
 export const getUserRole = (): 'organizer' | 'sponsor' | null => {
-  return currentUser ? currentUser.role : null;
+  const user = getCurrentUser();
+  return user ? user.role : null;
 };

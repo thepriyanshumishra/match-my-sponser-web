@@ -1,13 +1,30 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { AnimatedBackground } from '@/components/shared/AnimatedBackground';
+import { getCurrentUser } from '@/lib/auth';
 
 export default function SponsorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    if (user.role !== 'sponsor') {
+      router.push('/organizer/dashboard');
+      return;
+    }
+  }, [router]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 relative">
       <AnimatedBackground />
