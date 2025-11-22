@@ -29,6 +29,9 @@ export const getCurrentUser = (): User | null => {
 export const clearCurrentUser = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('current_user');
+    // Clear any other auth-related items
+    localStorage.removeItem('demo_accounts');
+    localStorage.removeItem('auth_session');
   }
 };
 

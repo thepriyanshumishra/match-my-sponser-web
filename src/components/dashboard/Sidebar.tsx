@@ -61,7 +61,8 @@ export function Sidebar({ role }: SidebarProps) {
 
   const handleLogout = () => {
     clearCurrentUser();
-    router.push('/');
+    // Force complete logout by reloading to home page
+    window.location.href = '/';
   };
 
   return (
