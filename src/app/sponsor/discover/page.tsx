@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { FilterPanel, EventFilters } from '@/components/sponsor/FilterPanel';
 import { EventDiscoveryCard } from '@/components/sponsor/EventDiscoveryCard';
+import { EventDetailsModal } from '@/components/sponsor/EventDetailsModal';
 import { Event } from '@/types/event';
 
 const fadeInUp = {
@@ -13,8 +15,7 @@ const fadeInUp = {
   transition: { duration: 0.5 },
 };
 
-// Mock events data
-const mockEvents: Event[] = [
+const eventData: Event[] = [
   {
     id: 'event-1',
     organizerId: 'org-1',
@@ -25,7 +26,7 @@ const mockEvents: Event[] = [
     date: new Date('2024-06-15'),
     description: 'A premier technology event bringing together innovators and industry leaders to showcase cutting-edge solutions.',
     sponsorshipRequirements: 'Looking for tech companies interested in innovation and startups. Seeking $50K-$100K sponsorship.',
-    bannerUrl: undefined,
+    bannerUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop',
     status: 'published',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -40,7 +41,7 @@ const mockEvents: Event[] = [
     date: new Date('2024-05-20'),
     description: 'Annual spring music festival featuring local and international artists across multiple genres.',
     sponsorshipRequirements: 'Seeking beverage and lifestyle brand sponsors. Budget range: $30K-$80K.',
-    bannerUrl: undefined,
+    bannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=400&fit=crop',
     status: 'published',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -55,7 +56,7 @@ const mockEvents: Event[] = [
     date: new Date('2024-07-10'),
     description: 'Inter-college sports championship with multiple sporting events and competitions.',
     sponsorshipRequirements: 'Looking for sports brands and energy drink sponsors. Target budget: $40K-$100K.',
-    bannerUrl: undefined,
+    bannerUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=400&fit=crop',
     status: 'published',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -70,7 +71,7 @@ const mockEvents: Event[] = [
     date: new Date('2024-08-05'),
     description: 'Competitive pitch event where startups present their ideas to investors and industry experts.',
     sponsorshipRequirements: 'Seeking financial services and tech sponsors. Budget: $25K-$60K.',
-    bannerUrl: undefined,
+    bannerUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=400&fit=crop',
     status: 'published',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -85,7 +86,7 @@ const mockEvents: Event[] = [
     date: new Date('2024-09-15'),
     description: 'Three-day college festival with cultural performances, competitions, and entertainment.',
     sponsorshipRequirements: 'Looking for diverse sponsors across categories. Budget range: $20K-$150K.',
-    bannerUrl: undefined,
+    bannerUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=400&fit=crop',
     status: 'published',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -100,7 +101,7 @@ const mockEvents: Event[] = [
     date: new Date('2024-06-25'),
     description: 'Intensive workshop on AI and machine learning with hands-on projects and expert speakers.',
     sponsorshipRequirements: 'Seeking tech companies and educational platforms. Budget: $15K-$40K.',
-    bannerUrl: undefined,
+    bannerUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=400&fit=crop',
     status: 'published',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -108,6 +109,7 @@ const mockEvents: Event[] = [
 ];
 
 export default function DiscoverEventsPage() {
+  const router = useRouter();
   const [filters, setFilters] = useState<EventFilters>({
     categories: [],
     audienceRange: { min: 0, max: 10000 },
@@ -115,12 +117,14 @@ export default function DiscoverEventsPage() {
     budgetDistribution: 'Any',
   });
 
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>(mockEvents);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>(eventData);
   const [matchScores, setMatchScores] = useState<Record<string, number>>({});
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Apply filters
-    let filtered = mockEvents;
+    let filtered = eventData;
 
     // Filter by category
     if (filters.categories.length > 0) {
@@ -143,18 +147,15 @@ export default function DiscoverEventsPage() {
       );
     }
 
-    // Filter by budget distribution (simplified logic)
+    // Filter by budget distribution
     if (filters.budgetDistribution !== 'Any') {
-      // This would be more sophisticated with actual budget data
-      // For now, we'll keep all events
+      // Budget filtering logic can be enhanced based on event requirements
     }
 
     setFilteredEvents(filtered);
 
     // Calculate match scores using the matching algorithm
-    // TODO: Get actual sponsor data from context or props
-    // For now, using a mock sponsor
-    const mockSponsor = {
+    const currentSponsor = {
       id: 'sponsor-1',
       userId: 'user-1',
       companyName: 'TechCorp Solutions',
@@ -171,18 +172,19 @@ export default function DiscoverEventsPage() {
 
     const scores: Record<string, number> = {};
     filtered.forEach((event) => {
-      // Use actual matching algorithm
       const { calculateMatchScore } = require('@/lib/matching');
-      const result = calculateMatchScore(event, mockSponsor);
+      const result = calculateMatchScore(event, currentSponsor);
       scores[event.id] = result.score;
     });
     setMatchScores(scores);
   }, [filters]);
 
   const handleViewDetails = (eventId: string) => {
-    // TODO: Navigate to event details page or open modal
-    console.log('View event details:', eventId);
-    alert('Event details view will be implemented in future tasks');
+    const event = filteredEvents.find((e) => e.id === eventId);
+    if (event) {
+      setSelectedEvent(event);
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -254,6 +256,14 @@ export default function DiscoverEventsPage() {
           )}
         </motion.div>
       </div>
+
+      {/* Event Details Modal */}
+      <EventDetailsModal
+        event={selectedEvent}
+        matchScore={selectedEvent ? matchScores[selectedEvent.id] || 0 : 0}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

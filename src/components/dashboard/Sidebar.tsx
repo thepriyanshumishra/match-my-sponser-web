@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -51,7 +52,7 @@ export function Sidebar({ role }: SidebarProps) {
       await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/login');
     } catch (error) {
-      console.error('Logout failed:', error);
+      router.push('/login');
     }
   };
 
@@ -59,12 +60,19 @@ export function Sidebar({ role }: SidebarProps) {
     <aside className="fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
-        <Link href={`/${role}/dashboard`} className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
-            <Sparkles size={26} className="text-white" />
+        <Link href={`/${role}/dashboard`} className="flex items-center gap-3 group">
+          <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center bg-white">
+            <Image
+              src="/logo.png"
+              alt="Match My Sponsor Logo"
+              width={48}
+              height={48}
+              className="object-contain"
+              priority
+            />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">
+            <h1 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
               Match My Sponsor
             </h1>
             <p className="text-xs text-gray-500 capitalize">{role}</p>

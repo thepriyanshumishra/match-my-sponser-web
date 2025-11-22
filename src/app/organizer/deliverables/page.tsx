@@ -20,10 +20,6 @@ export default function OrganizerDeliverablesPage() {
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchDeliverables();
-  }, []);
-
   const fetchDeliverables = async () => {
     // Mock data
     const mockDeliverables: Deliverable[] = [
@@ -60,6 +56,10 @@ export default function OrganizerDeliverablesPage() {
     setDeliverables(mockDeliverables);
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDeliverables();
+  }, []);
 
   const handleFileUpload = async (deliverableId: string, file: File) => {
     setUploadingId(deliverableId);
@@ -114,7 +114,7 @@ export default function OrganizerDeliverablesPage() {
       </div>
 
       {deliverables.length === 0 ? (
-        <div className="glass-card p-12 text-center">
+        <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg p-12 text-center">
           <Upload size={48} className="mx-auto text-gray-400 mb-4" />
           <h3 className="text-xl font-semibold text-gray-700 mb-2">No deliverables yet</h3>
           <p className="text-gray-600">Deliverables will appear here once you match with sponsors</p>
@@ -122,7 +122,7 @@ export default function OrganizerDeliverablesPage() {
       ) : (
         <div className="space-y-4">
           {deliverables.map((deliverable) => (
-            <div key={deliverable.id} className="glass-card p-6">
+            <div key={deliverable.id} className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg p-6 hover:shadow-xl transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">

@@ -1,53 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { ConversationList } from '@/components/chat/ConversationList';
 import { MessageList } from '@/components/chat/MessageList';
 import { getCurrentUser } from '@/lib/auth';
+import { useChat } from '@/hooks/useChat';
+import { useConversations } from '@/hooks/useConversations';
 
-interface Message {
-  id: string;
-  senderId: string;
-  content: string;
-  timestamp: Date;
-}
-
-interface Conversation {
-  id: string;
-  participantName: string;
-  participantAvatar?: string;
-  lastMessage: string;
-  lastMessageTime: Date;
-  unreadCount: number;
-}
-
-function ChatArea({ conversationId, conversations }: { conversationId: string | null; conversations: Conversation[] }) {
-  const [messages, setMessages] = useState<Message[]>([]);
+function ChatArea({ conversationId, conversations }: { conversationId: string | null; conversations: any[] }) {
   const [newMessage, setNewMessage] = useState('');
-  const [loading, setLoading] = useState(false);
   const currentUser = getCurrentUser();
-
-  useEffect(() => {
-    if (conversationId) {
-      fetchMessages();
-    }
-  }, [conversationId]);
-
-  const fetchMessages = async () => {
-    setLoading(true);
-    const mockMessages: Message[] = [
-      { id: '1', senderId: 'other', content: 'Hi! Interested in sponsoring your event.', timestamp: new Date(Date.now() - 3600000) },
-      { id: '2', senderId: currentUser?.id || 'me', content: 'Great! Let me share the details.', timestamp: new Date(Date.now() - 3000000) },
-    ];
-    setMessages(mockMessages);
-    setLoading(false);
-  };
+  const { messages, loading, sendMessage } = useChat(conversationId);
 
   const handleSend = async () => {
-    if (!newMessage.trim() || !conversationId || !currentUser) return;
-    const msg: Message = { id: Date.now().toString(), senderId: currentUser.id, content: newMessage.trim(), timestamp: new Date() };
-    setMessages([...messages, msg]);
+    if (!newMessage.trim()) return;
+    await sendMessage(newMessage.trim());
     setNewMessage('');
   };
 
@@ -69,7 +37,7 @@ function ChatArea({ conversationId, conversations }: { conversationId: string | 
       {loading ? (
         <div className="flex-1 flex items-center justify-center text-gray-500">Loading...</div>
       ) : (
-        <MessageList messages={messages} currentUserId={currentUser?.id || ''} />
+        <MessageList messages={messages.map(m => ({ id: m.id, senderId: m.sender_id, content: m.content, timestamp: new Date(m.created_at) }))} currentUserId={currentUser?.id || ''} />
       )}
       <div className="p-4 border-t border-white/20">
         <div className="flex gap-2">
@@ -91,47 +59,12 @@ function ChatArea({ conversationId, conversations }: { conversationId: string | 
 }
 
 export default function OrganizerChatPage() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { conversations, loading } = useConversations();
 
-  useEffect(() => {
-    fetchConversations();
-  }, []);
-
-  const fetchConversations = async () => {
-    try {
-      const user = getCurrentUser();
-      if (!user) return;
-
-      // Mock data - replace with API call
-      const mockConversations: Conversation[] = [
-        {
-          id: '1',
-          participantName: 'TechCorp Inc.',
-          lastMessage: 'Looking forward to sponsoring your event!',
-          lastMessageTime: new Date(),
-          unreadCount: 2,
-        },
-        {
-          id: '2',
-          participantName: 'Innovation Labs',
-          lastMessage: 'Can we discuss the sponsorship package?',
-          lastMessageTime: new Date(Date.now() - 3600000),
-          unreadCount: 0,
-        },
-      ];
-
-      setConversations(mockConversations);
-      if (mockConversations.length > 0) {
-        setSelectedConversation(mockConversations[0].id);
-      }
-    } catch (error) {
-      console.error('Failed to fetch conversations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (conversations.length > 0 && !selectedConversation) {
+    setSelectedConversation(conversations[0].id);
+  }
 
   if (loading) {
     return (

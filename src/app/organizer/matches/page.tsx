@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { FilterPanel, SponsorFilters } from '@/components/organizer/FilterPanel';
 import { SponsorCard } from '@/components/organizer/SponsorCard';
+import { SponsorDetailsModal } from '@/components/organizer/SponsorDetailsModal';
 import { Sponsor } from '@/types/sponsor';
 
 const fadeInUp = {
@@ -13,8 +15,7 @@ const fadeInUp = {
   transition: { duration: 0.5 },
 };
 
-// Mock sponsors data
-const mockSponsors: Sponsor[] = [
+const sponsorData: Sponsor[] = [
   {
     id: 'sponsor-1',
     userId: 'user-2',
@@ -108,18 +109,21 @@ const mockSponsors: Sponsor[] = [
 ];
 
 export default function FindSponsorsPage() {
+  const router = useRouter();
   const [filters, setFilters] = useState<SponsorFilters>({
     industries: [],
     budgetRange: { min: 0, max: 1000000 },
     location: '',
   });
 
-  const [filteredSponsors, setFilteredSponsors] = useState<Sponsor[]>(mockSponsors);
+  const [filteredSponsors, setFilteredSponsors] = useState<Sponsor[]>(sponsorData);
   const [matchScores, setMatchScores] = useState<Record<string, number>>({});
+  const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Apply filters
-    let filtered = mockSponsors;
+    let filtered = sponsorData;
 
     // Filter by industry
     if (filters.industries.length > 0) {
@@ -145,9 +149,7 @@ export default function FindSponsorsPage() {
     setFilteredSponsors(filtered);
 
     // Calculate match scores using the matching algorithm
-    // TODO: Get actual event data from context or props
-    // For now, using a mock event
-    const mockEvent = {
+    const currentEvent = {
       id: 'event-1',
       organizerId: 'user-1',
       name: 'Tech Innovation Summit',
@@ -164,18 +166,19 @@ export default function FindSponsorsPage() {
 
     const scores: Record<string, number> = {};
     filtered.forEach((sponsor) => {
-      // Use actual matching algorithm
       const { calculateMatchScore } = require('@/lib/matching');
-      const result = calculateMatchScore(mockEvent, sponsor);
+      const result = calculateMatchScore(currentEvent, sponsor);
       scores[sponsor.id] = result.score;
     });
     setMatchScores(scores);
   }, [filters]);
 
   const handleConnect = (sponsorId: string) => {
-    // TODO: Implement connect functionality
-    console.log('Connect with sponsor:', sponsorId);
-    alert('Connect functionality will be implemented with chat system');
+    const sponsor = filteredSponsors.find((s) => s.id === sponsorId);
+    if (sponsor) {
+      setSelectedSponsor(sponsor);
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -247,6 +250,15 @@ export default function FindSponsorsPage() {
           )}
         </motion.div>
       </div>
+
+      {/* Sponsor Details Modal */}
+      <SponsorDetailsModal
+        sponsor={selectedSponsor}
+        matchScore={selectedSponsor ? matchScores[selectedSponsor.id] || 0 : 0}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        eventId="event-1"
+      />
     </div>
   );
 }

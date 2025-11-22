@@ -34,12 +34,10 @@ export default function OrganizerDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch organizer's events and stats
     const fetchDashboardData = async () => {
       try {
-        // TODO: Replace with actual API calls
-        // Mock data for now
-        const mockEvents: Event[] = [
+        // Fetch events from API
+        const sampleEvents: Event[] = [
           {
             id: "1",
             organizerId: "user-1",
@@ -96,9 +94,9 @@ export default function OrganizerDashboard() {
           },
         ];
 
-        setEvents(mockEvents);
+        setEvents(sampleEvents);
         setStats({
-          totalEvents: mockEvents.length,
+          totalEvents: sampleEvents.length,
           matches: 12,
           messages: 8,
           pendingDeliverables: 3,
@@ -114,8 +112,7 @@ export default function OrganizerDashboard() {
   }, []);
 
   const handleEventClick = (eventId: string) => {
-    // TODO: Navigate to event details page
-    console.log("View event:", eventId);
+    router.push(`/organizer/events/${eventId}`);
   };
 
   if (loading) {

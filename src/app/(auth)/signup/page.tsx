@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/Input';
@@ -126,6 +127,19 @@ export default function SignupPage() {
 
       <div className="w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8">
         <div className="text-center mb-8">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-lg flex items-center justify-center bg-white">
+              <Image
+                src="/logo.png"
+                alt="Match My Sponsor"
+                width={80}
+                height={80}
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">Create Account</h1>
           <p className="text-gray-600">Step {step} of 4</p>
         </div>
@@ -344,6 +358,65 @@ export default function SignupPage() {
               </button>
             )}
           </div>
+
+          {/* Demo Credentials Section */}
+          {step === 1 && (
+            <>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white/80 text-gray-500">Or try demo accounts</span>
+                </div>
+              </div>
+
+              <div className="text-center text-xs text-gray-500 mb-2">
+                Click to login with existing demo accounts
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Link
+                  href="/login"
+                  onClick={() => {
+                    setTimeout(() => {
+                      const loginForm = document.querySelector('form');
+                      if (loginForm) {
+                        const emailInput = loginForm.querySelector('input[type="email"]') as HTMLInputElement;
+                        const passwordInput = loginForm.querySelector('input[type="password"]') as HTMLInputElement;
+                        if (emailInput && passwordInput) {
+                          emailInput.value = 'test.organizer@test.com';
+                          passwordInput.value = 'iamorganizer';
+                        }
+                      }
+                    }, 100);
+                  }}
+                  className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border-2 border-indigo-200 text-indigo-700 rounded-xl font-medium hover:bg-indigo-50 hover:border-indigo-300 transition-all text-sm text-center"
+                >
+                  🎪 Organizer Demo
+                </Link>
+                <Link
+                  href="/login"
+                  onClick={() => {
+                    setTimeout(() => {
+                      const loginForm = document.querySelector('form');
+                      if (loginForm) {
+                        const emailInput = loginForm.querySelector('input[type="email"]') as HTMLInputElement;
+                        const passwordInput = loginForm.querySelector('input[type="password"]') as HTMLInputElement;
+                        if (emailInput && passwordInput) {
+                          emailInput.value = 'test.sponser@test.com';
+                          passwordInput.value = 'iamsponser';
+                        }
+                      }
+                    }, 100);
+                  }}
+                  className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border-2 border-purple-200 text-purple-700 rounded-xl font-medium hover:bg-purple-50 hover:border-purple-300 transition-all text-sm text-center"
+                >
+                  💼 Sponsor Demo
+                </Link>
+              </div>
+            </>
+          )}
 
           <div className="text-center text-sm">
             <span className="text-gray-600">Already have an account? </span>

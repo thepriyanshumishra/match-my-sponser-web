@@ -15,7 +15,15 @@ interface MatchResult {
 
 /**
  * Calculate match percentage between an event and a sponsor
- * Based on multiple weighted factors
+ * Uses a weighted scoring algorithm considering multiple factors:
+ * - Category alignment (35%)
+ * - Budget compatibility (30%)
+ * - Audience size fit (20%)
+ * - Location proximity (15%)
+ * 
+ * @param event - The event to match
+ * @param sponsor - The sponsor to match against
+ * @returns Match result with score and detailed breakdown
  */
 export function calculateMatchScore(event: Event, sponsor: Sponsor): MatchResult {
   const weights = {
@@ -186,8 +194,7 @@ function calculateAudienceScore(
 }
 
 /**
- * Calculate location proximity score
- * Simple string matching for now - could be enhanced with geocoding
+ * Calculate location proximity score based on string matching
  */
 function calculateLocationScore(eventLocation: string, sponsorLocation: string): number {
   const eventLower = eventLocation.toLowerCase();

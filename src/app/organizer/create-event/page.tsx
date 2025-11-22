@@ -97,14 +97,20 @@ export default function CreateEventPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <motion.div {...fadeInUp}>
-        <button
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.button
           onClick={handleCancel}
-          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4 transition-colors"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4 transition-colors group"
+          whileHover={{ x: -5 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <ArrowLeft size={20} />
-          <span>Back to Dashboard</span>
-        </button>
+          <ArrowLeft size={20} className="group-hover:text-indigo-600 transition-colors" />
+          <span className="group-hover:text-indigo-600 transition-colors">Back to Dashboard</span>
+        </motion.button>
         
         <h1 className="text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
           Create New Event
@@ -118,7 +124,7 @@ export default function CreateEventPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
       >
         <EventForm onSubmit={handleSubmit} onCancel={handleCancel} />
       </motion.div>

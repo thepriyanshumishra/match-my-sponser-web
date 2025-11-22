@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Calendar, MapPin, Users, Sparkles, Eye } from 'lucide-react';
+import { Calendar, MapPin, Users, Sparkles } from 'lucide-react';
 import { GlassCard } from '@/components/shared/GlassCard';
 import { GlassButton } from '@/components/shared/GlassButton';
 import { Event } from '@/types/event';
@@ -139,7 +139,6 @@ export function EventDiscoveryCard({ event, matchScore, onViewDetails }: EventDi
           onClick={onViewDetails}
           className="w-full"
         >
-          <Eye size={16} />
           View Details
         </GlassButton>
       </div>

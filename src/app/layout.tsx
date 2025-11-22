@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,6 +21,14 @@ export const metadata: Metadata = {
   keywords: ['event sponsorship', 'sponsor matching', 'event organizer', 'sponsor platform'],
   authors: [{ name: 'Match My Sponsor' }],
   manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
+    shortcut: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -44,6 +54,8 @@ export default function RootLayout({
             {children}
           </ErrorBoundary>
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

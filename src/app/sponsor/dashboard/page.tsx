@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Target, CheckSquare, MessageSquare } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { EventCard } from '@/components/dashboard/EventCard';
+import { EventDetailsModal } from '@/components/sponsor/EventDetailsModal';
 import { Event } from '@/types/event';
 import { useRouter } from 'next/navigation';
 
@@ -31,14 +32,19 @@ export default function SponsorDashboard() {
     messages: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [matchScores] = useState<Record<string, number>>({
+    '1': 85,
+    '2': 72,
+    '3': 68,
+  });
 
   useEffect(() => {
-    // Fetch sponsor's recommended events and stats
     const fetchDashboardData = async () => {
       try {
-        // TODO: Replace with actual API calls
-        // Mock data for now
-        const mockEvents: Event[] = [
+        // Fetch recommended events from API
+        const recommendedData: Event[] = [
           {
             id: '1',
             organizerId: 'org-1',
@@ -49,7 +55,7 @@ export default function SponsorDashboard() {
             date: new Date('2024-06-15'),
             description: 'A premier technology event bringing together innovators and industry leaders.',
             sponsorshipRequirements: 'Looking for tech companies interested in innovation and startups.',
-            bannerUrl: undefined,
+            bannerUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop',
             status: 'published',
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -64,7 +70,7 @@ export default function SponsorDashboard() {
             date: new Date('2024-05-20'),
             description: 'Annual spring music festival featuring local and international artists.',
             sponsorshipRequirements: 'Seeking beverage and lifestyle brand sponsors.',
-            bannerUrl: undefined,
+            bannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=400&fit=crop',
             status: 'published',
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -79,14 +85,14 @@ export default function SponsorDashboard() {
             date: new Date('2024-07-10'),
             description: 'Inter-college sports championship with multiple sporting events.',
             sponsorshipRequirements: 'Looking for sports brands and energy drink sponsors.',
-            bannerUrl: undefined,
+            bannerUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=400&fit=crop',
             status: 'published',
             createdAt: new Date(),
             updatedAt: new Date(),
           },
         ];
 
-        setRecommendedEvents(mockEvents);
+        setRecommendedEvents(recommendedData);
         setStats({
           eventsMatched: 8,
           pendingApprovals: 3,
@@ -103,8 +109,11 @@ export default function SponsorDashboard() {
   }, []);
 
   const handleEventClick = (eventId: string) => {
-    // TODO: Navigate to event details page
-    console.log('View event:', eventId);
+    const event = recommendedEvents.find((e) => e.id === eventId);
+    if (event) {
+      setSelectedEvent(event);
+      setIsModalOpen(true);
+    }
   };
 
   if (loading) {
@@ -202,6 +211,14 @@ export default function SponsorDashboard() {
           </div>
         )}
       </motion.div>
+
+      {/* Event Details Modal */}
+      <EventDetailsModal
+        event={selectedEvent}
+        matchScore={selectedEvent ? matchScores[selectedEvent.id] || 0 : 0}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

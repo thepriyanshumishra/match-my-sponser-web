@@ -1,6 +1,8 @@
 {
   "name": "match-my-sponsor",
   "version": "0.1.0",
+  "description": "A modern platform connecting event organizers with sponsors using smart matching algorithms",
+  "author": "Priyanshu",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,6 +13,8 @@
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.81.1",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.553.0",

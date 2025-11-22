@@ -22,10 +22,6 @@ export default function SponsorDeliverablesPage() {
   const [selectedDeliverable, setSelectedDeliverable] = useState<Deliverable | null>(null);
   const [feedback, setFeedback] = useState('');
 
-  useEffect(() => {
-    fetchDeliverables();
-  }, []);
-
   const fetchDeliverables = async () => {
     // Mock data
     const mockDeliverables: Deliverable[] = [
@@ -64,6 +60,10 @@ export default function SponsorDeliverablesPage() {
     setDeliverables(mockDeliverables);
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDeliverables();
+  }, []);
 
   const handleApprove = async (deliverableId: string) => {
     setDeliverables(deliverables.map(d =>
@@ -124,7 +124,7 @@ export default function SponsorDeliverablesPage() {
       </div>
 
       {deliverables.length === 0 ? (
-        <div className="glass-card p-12 text-center">
+        <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg p-12 text-center">
           <CheckCircle size={48} className="mx-auto text-gray-400 mb-4" />
           <h3 className="text-xl font-semibold text-gray-700 mb-2">No deliverables yet</h3>
           <p className="text-gray-600">Deliverables will appear here once you sponsor events</p>
@@ -132,7 +132,7 @@ export default function SponsorDeliverablesPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {deliverables.map((deliverable) => (
-            <div key={deliverable.id} className="glass-card p-6">
+            <div key={deliverable.id} className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg p-6 hover:shadow-xl transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">

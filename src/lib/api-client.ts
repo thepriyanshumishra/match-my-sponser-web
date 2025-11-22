@@ -1,48 +1,72 @@
-const getAuthToken = () => {
-  if (typeof window === 'undefined') return null;
-  const session = localStorage.getItem('auth_session');
-  return session ? JSON.parse(session).accessToken : null;
-};
+import { getCurrentUser, getSession } from './auth';
+import { createLocalMatch, getUserMatches } from './localStorage-chat';
 
-export async function apiRequest<T>(
-  url: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = getAuthToken();
-  
-  const headers: Record<string, string> = {
-    ...(options.headers as Record<string, string>),
+const API_BASE = '/api';
+const USE_LOCALSTORAGE = process.env.NEXT_PUBLIC_USE_LOCALSTORAGE === 'true';
+
+async function getAuthHeaders() {
+  const user = getCurrentUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+  const session = getSession();
+  if (!session?.accessToken) {
+    throw new Error('No authentication token');
+  }
+  return {
+    'Authorization': `Bearer ${session.accessToken}`,
+    'Content-Type': 'application/json',
   };
+}
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+export async function createMatch(eventId: string, sponsorId: string) {
+  const user = getCurrentUser();
+  if (!user) {
+    throw new Error('User not authenticated');
   }
 
-  if (!(options.body instanceof FormData)) {
-    headers['Content-Type'] = 'application/json';
+  if (USE_LOCALSTORAGE) {
+    // Use localStorage for demo
+    const organizerId = user.role === 'organizer' ? user.id : 'demo-organizer';
+    return createLocalMatch(eventId, sponsorId, organizerId);
   }
 
-  const response = await fetch(url, {
-    ...options,
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_BASE}/matches`, {
+    method: 'POST',
     headers,
+    body: JSON.stringify({ eventId, sponsorId }),
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(error.error || 'Request failed');
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to create match');
   }
 
   return response.json();
 }
 
-export const api = {
-  get: <T>(url: string) => apiRequest<T>(url, { method: 'GET' }),
-  post: <T>(url: string, data: any) => 
-    apiRequest<T>(url, { 
-      method: 'POST', 
-      body: data instanceof FormData ? data : JSON.stringify(data) 
-    }),
-  put: <T>(url: string, data: any) => 
-    apiRequest<T>(url, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: <T>(url: string) => apiRequest<T>(url, { method: 'DELETE' }),
-};
+export async function getMatches() {
+  const user = getCurrentUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  if (USE_LOCALSTORAGE) {
+    // Use localStorage for demo
+    return getUserMatches(user.id, user.role as 'organizer' | 'sponsor');
+  }
+
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_BASE}/matches`, {
+    method: 'GET',
+    headers,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to fetch matches');
+  }
+
+  return response.json();
+}
