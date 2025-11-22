@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/organizer/', '/sponsor/'],
     },
-    sitemap: 'https://match-my-sponsor.vercel.app/sitemap.xml',
-  };
+    sitemap: 'https://matchmysponsor.com/sitemap.xml',
+  }
 }

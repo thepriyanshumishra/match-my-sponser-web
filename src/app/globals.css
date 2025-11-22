@@ -149,6 +149,25 @@ html {
   contain: layout style paint;
 }
 
+/* Reduce layout shifts */
+.glass-card {
+  contain: layout style;
+}
+
+/* Optimize font loading */
+@font-face {
+  font-family: 'Geist';
+  font-display: swap;
+}
+
+/* Critical CSS for above-fold content */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .glass-card,
 .glass-button-primary,
 .glass-button-secondary {
@@ -179,6 +198,22 @@ html {
   .glass-input {
     background: rgba(255, 255, 255, 0.4);
   }
+}
+
+/* Optimize images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lazy loading optimization */
+.lazy-load {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.lazy-load.loaded {
+  opacity: 1;
 }
 
 /* Blob animations */
@@ -228,7 +263,7 @@ html {
 
 
 
-/* Reduce motion for accessibility */
+/* Reduce motion for accessibility and performance */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -236,6 +271,10 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  
+  .animate-blob {
+    animation: none !important;
   }
 }
 

@@ -20,19 +20,61 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Match My Sponsor - Connect Events with Sponsors",
-  description: "A modern platform connecting event organizers with sponsors. Find the perfect match for your event or discover sponsorship opportunities.",
-  keywords: ['event sponsorship', 'sponsor matching', 'event organizer', 'sponsor platform'],
-  authors: [{ name: 'Match My Sponsor' }],
+  metadataBase: new URL('https://matchmysponsor.com'),
+  title: {
+    default: "Match My Sponsor - Connect Events with Sponsors",
+    template: "%s | Match My Sponsor"
+  },
+  description: "Connect event organizers with sponsors through AI-powered matching. Find perfect sponsorship opportunities for hackathons, conferences, sports events, and cultural festivals.",
+  keywords: ['event sponsorship', 'sponsor matching', 'event organizer', 'sponsor platform', 'hackathon sponsors', 'conference sponsorship', 'sports event sponsors', 'cultural event funding', 'startup events', 'tech conferences'],
+  authors: [{ name: 'Match My Sponsor', url: 'https://matchmysponsor.com' }],
+  creator: 'Match My Sponsor',
+  publisher: 'Match My Sponsor',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://matchmysponsor.com',
+    title: 'Match My Sponsor - Connect Events with Sponsors',
+    description: 'AI-powered platform connecting event organizers with sponsors. Find perfect matches for hackathons, conferences, and cultural events.',
+    siteName: 'Match My Sponsor',
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Match My Sponsor - Event Sponsorship Platform',
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Match My Sponsor - Connect Events with Sponsors',
+    description: 'AI-powered platform connecting event organizers with sponsors.',
+    images: ['/og-image.png'],
+    creator: '@matchmysponsor',
+  },
   manifest: '/manifest.webmanifest',
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon.png', type: 'image/png' },
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
     ],
-    apple: '/apple-icon.png',
+    apple: [{ url: '/apple-icon.png', sizes: '180x180' }],
     shortcut: '/favicon.ico',
   },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  category: 'technology',
 };
 
 export const viewport = {
@@ -52,7 +94,30 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vercel.live" />
-
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="preload" href="/logo.png" as="image" type="image/png" />
+        <meta name="theme-color" content="#667eea" />
+        <meta name="color-scheme" content="light" />
+        <link rel="canonical" href="https://matchmysponsor.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "Match My Sponsor",
+              "description": "AI-powered platform connecting event organizers with sponsors",
+              "url": "https://matchmysponsor.com",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "Web",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            })
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

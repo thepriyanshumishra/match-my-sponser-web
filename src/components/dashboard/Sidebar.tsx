@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+// Using CSS transitions instead of framer-motion for better performance
 import {
   LayoutDashboard,
   PlusCircle,
@@ -77,27 +77,19 @@ export function Sidebar({ role }: SidebarProps) {
       </button>
 
       {/* Mobile Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="lg:hidden fixed inset-0 bg-black/50 z-40"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-        )}
-      </AnimatePresence>
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 animate-in fade-in duration-200"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
-      <motion.aside
-        initial={false}
-        animate={{
-          x: isDesktop ? 0 : (isMobileMenuOpen ? 0 : '-100%'),
-        }}
+      <aside
         className={clsx(
-          'fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col z-40',
-          'lg:fixed lg:z-auto'
+          'fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col z-40 transition-transform duration-300',
+          'lg:fixed lg:z-auto lg:translate-x-0',
+          isDesktop ? 'translate-x-0' : (isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full')
         )}
       >
       {/* Logo */}
@@ -130,21 +122,19 @@ export function Sidebar({ role }: SidebarProps) {
 
           return (
             <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
-              <motion.div
+              <div
                 className={clsx(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200',
+                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]',
                   {
                     'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg':
                       isActive,
                     'text-gray-700 hover:bg-gray-100': !isActive,
                   }
                 )}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
                 <Icon size={20} />
                 <span className="font-medium">{item.label}</span>
-              </motion.div>
+              </div>
             </Link>
           );
         })}
@@ -152,17 +142,15 @@ export function Sidebar({ role }: SidebarProps) {
 
       {/* Logout Button */}
       <div className="p-2 lg:p-4 border-t border-gray-200">
-        <motion.button
+        <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
         >
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
-        </motion.button>
+        </button>
       </div>
-      </motion.aside>
+      </aside>
     </>
   );
 }
