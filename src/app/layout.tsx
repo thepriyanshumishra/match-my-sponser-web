@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import { AuthProvider } from '@/components/providers/AuthProvider';
+import { PWAInstallPrompt } from '@/components/shared/PWAInstallPrompt';
+import { OfflineIndicator } from '@/components/shared/OfflineIndicator';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -63,7 +65,7 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
     creator: '@matchmysponsor',
   },
-  manifest: '/manifest.webmanifest',
+  manifest: '/manifest.json',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -100,6 +102,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#667eea" />
         <meta name="color-scheme" content="light" />
         <link rel="canonical" href="https://matchmysponsor.com" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="MatchMySponser" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -134,6 +140,8 @@ export default function RootLayout({
           <ErrorBoundary>
             <AuthProvider>
               {children}
+              <PWAInstallPrompt />
+              <OfflineIndicator />
             </AuthProvider>
           </ErrorBoundary>
         </div>
