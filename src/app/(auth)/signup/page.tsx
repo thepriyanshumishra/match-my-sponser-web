@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/Input';
-import { AnimatedBackground } from '@/components/shared/AnimatedBackground';
 
 
 type UserRole = 'organizer' | 'sponsor' | '';
@@ -125,7 +124,6 @@ export default function SignupPage() {
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 overflow-auto">
-      <AnimatedBackground />
       <div className="min-h-screen flex items-center justify-center p-4">
 
       <div className="w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8 relative z-10">
