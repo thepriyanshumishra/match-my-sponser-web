@@ -97,7 +97,7 @@ export function Sidebar({ role }: SidebarProps) {
         }}
         className={clsx(
           'fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col z-40',
-          'lg:relative lg:z-auto'
+          'lg:fixed lg:z-auto'
         )}
       >
       {/* Logo */}
