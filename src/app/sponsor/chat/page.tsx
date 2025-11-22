@@ -8,7 +8,7 @@ import { getCurrentUser } from '@/lib/auth';
 import { useChat } from '@/hooks/useChat';
 import { useConversations } from '@/hooks/useConversations';
 
-function ChatArea({ conversationId, conversations }: { conversationId: string | null; conversations: any[] }) {
+function ChatArea({ conversationId, conversations, onBack }: { conversationId: string | null; conversations: any[]; onBack?: () => void }) {
   const [newMessage, setNewMessage] = useState('');
   const currentUser = getCurrentUser();
   const { messages, loading, sendMessage } = useChat(conversationId);
@@ -31,15 +31,22 @@ function ChatArea({ conversationId, conversations }: { conversationId: string | 
 
   return (
     <div className="flex-1 glass-card flex flex-col">
-      <div className="p-4 border-b border-white/20">
-        <h3 className="font-semibold text-lg">{conversation?.participantName}</h3>
+      <div className="p-3 sm:p-4 border-b border-white/20">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button onClick={onBack} className="lg:hidden p-1 hover:bg-white/20 rounded-lg">
+              ←
+            </button>
+          )}
+          <h3 className="font-semibold text-base sm:text-lg">{conversation?.participantName}</h3>
+        </div>
       </div>
       {loading ? (
         <div className="flex-1 flex items-center justify-center text-gray-500">Loading...</div>
       ) : (
         <MessageList messages={messages.map(m => ({ id: m.id, senderId: m.sender_id, content: m.content, timestamp: new Date(m.created_at) }))} currentUserId={currentUser?.id || ''} />
       )}
-      <div className="p-4 border-t border-white/20">
+      <div className="p-3 sm:p-4 border-t border-white/20">
         <div className="flex gap-2">
           <input
             type="text"
@@ -47,10 +54,10 @@ function ChatArea({ conversationId, conversations }: { conversationId: string | 
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 glass-input"
+            className="flex-1 glass-input text-sm sm:text-base"
           />
-          <button onClick={handleSend} disabled={!newMessage.trim()} className="glass-button-primary px-6 disabled:opacity-50">
-            <Send size={20} />
+          <button onClick={handleSend} disabled={!newMessage.trim()} className="glass-button-primary px-3 sm:px-6 disabled:opacity-50">
+            <Send size={16} className="sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
@@ -78,27 +85,32 @@ export default function SponsorChatPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-12rem)]">
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-6">
+    <div className="h-[calc(100vh-8rem)] lg:h-[calc(100vh-12rem)] p-4 lg:p-0">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-4 lg:mb-6">
         Messages
       </h1>
       
       {conversations.length === 0 ? (
-        <div className="glass-card p-12 text-center">
-          <p className="text-gray-600 text-lg">No conversations yet</p>
-          <p className="text-gray-500 mt-2">Connect with event organizers to start chatting</p>
+        <div className="glass-card p-6 sm:p-8 lg:p-12 text-center">
+          <p className="text-gray-600 text-base sm:text-lg">No conversations yet</p>
+          <p className="text-gray-500 mt-2 text-sm sm:text-base">Connect with event organizers to start chatting</p>
         </div>
       ) : (
-        <div className="flex h-full gap-4">
-          <ConversationList
-            conversations={conversations}
-            selectedId={selectedConversation}
-            onSelect={setSelectedConversation}
-          />
-          <ChatArea
-            conversationId={selectedConversation}
-            conversations={conversations}
-          />
+        <div className="flex flex-col lg:flex-row h-full gap-2 lg:gap-4">
+          <div className={`${selectedConversation ? 'hidden lg:block' : 'block'} lg:w-80`}>
+            <ConversationList
+              conversations={conversations}
+              selectedId={selectedConversation}
+              onSelect={setSelectedConversation}
+            />
+          </div>
+          <div className={`${selectedConversation ? 'block' : 'hidden lg:block'} flex-1`}>
+            <ChatArea
+              conversationId={selectedConversation}
+              conversations={conversations}
+              onBack={() => setSelectedConversation(null)}
+            />
+          </div>
         </div>
       )}
     </div>

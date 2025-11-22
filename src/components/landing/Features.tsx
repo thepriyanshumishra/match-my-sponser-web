@@ -94,8 +94,7 @@ export function Features() {
                   </div>
                 </GlassCard>
               </motion.div>
-       
-     );
+            );
           })}
         </motion.div>
       </div>

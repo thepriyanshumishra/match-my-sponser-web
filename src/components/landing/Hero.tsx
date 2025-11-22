@@ -2,10 +2,13 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { GlassCard } from '@/components/shared/GlassCard';
 import { GlassButton } from '@/components/shared/GlassButton';
 
 export function Hero() {
+  const router = useRouter();
+  
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -66,17 +69,19 @@ export function Hero() {
             variants={fadeInUp}
           >
             <button
-              onClick={() => (window.location.href = '/signup')}
-              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200"
+              onClick={() => router.push('/signup')}
+              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 cursor-pointer"
             >
               Get Started Free →
             </button>
             <button
               onClick={() => {
                 const featuresSection = document.getElementById('features');
-                featuresSection?.scrollIntoView({ behavior: 'smooth' });
+                if (featuresSection) {
+                  featuresSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
               }}
-              className="px-8 py-4 bg-white/80 backdrop-blur-xl border border-gray-200 text-gray-700 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+              className="px-8 py-4 bg-white/80 backdrop-blur-xl border border-gray-200 text-gray-700 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer"
             >
               See How It Works
             </button>

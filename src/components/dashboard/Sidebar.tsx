@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -13,7 +13,8 @@ import {
   CheckSquare,
   Compass,
   LogOut,
-  Sparkles,
+  Menu,
+  X,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -45,6 +46,7 @@ const sponsorNavItems: NavItem[] = [
 export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navItems = role === 'organizer' ? organizerNavItems : sponsorNavItems;
 
   const handleLogout = async () => {
@@ -57,9 +59,41 @@ export function Sidebar({ role }: SidebarProps) {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col">
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/80 backdrop-blur-xl rounded-xl border border-gray-200 shadow-lg"
+      >
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar */}
+      <motion.aside
+        initial={false}
+        animate={{
+          x: isMobileMenuOpen ? 0 : '-100%',
+        }}
+        className={clsx(
+          'fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col z-40',
+          'lg:translate-x-0 lg:static lg:z-auto'
+        )}
+      >
       {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-4 lg:p-6 border-b border-gray-200">
         <Link href={`/${role}/dashboard`} className="flex items-center gap-3 group">
           <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center bg-white">
             <Image
@@ -81,13 +115,13 @@ export function Sidebar({ role }: SidebarProps) {
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-2 lg:p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
           return (
-            <Link key={item.href} href={item.href}>
+            <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
               <motion.div
                 className={clsx(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200',
@@ -109,7 +143,7 @@ export function Sidebar({ role }: SidebarProps) {
       </nav>
 
       {/* Logout Button */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-2 lg:p-4 border-t border-gray-200">
         <motion.button
           onClick={handleLogout}
           className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
@@ -120,6 +154,7 @@ export function Sidebar({ role }: SidebarProps) {
           <span className="font-medium">Logout</span>
         </motion.button>
       </div>
-    </aside>
+      </motion.aside>
+    </>
   );
 }

@@ -1,15 +1,50 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/dashboard/Sidebar';
+import { getCurrentUser } from '@/lib/auth';
 
 export default function SponsorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+      router.push('/login');
+      return;
+    }
+    if (currentUser.role !== 'sponsor') {
+      router.push('/organizer/dashboard');
+      return;
+    }
+    setUser(currentUser);
+    setLoading(false);
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-[#667eea] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100">
       <Sidebar role="sponsor" />
-      <main className="ml-72 p-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="lg:ml-72 min-h-screen">
+        <div className="p-4 lg:p-8 pt-16 lg:pt-8">
           {children}
         </div>
       </main>
