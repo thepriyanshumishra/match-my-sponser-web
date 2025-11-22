@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -47,7 +47,15 @@ export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const navItems = role === 'organizer' ? organizerNavItems : sponsorNavItems;
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -85,11 +93,11 @@ export function Sidebar({ role }: SidebarProps) {
       <motion.aside
         initial={false}
         animate={{
-          x: isMobileMenuOpen ? 0 : '-100%',
+          x: isDesktop ? 0 : (isMobileMenuOpen ? 0 : '-100%'),
         }}
         className={clsx(
           'fixed left-0 top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 shadow-2xl flex flex-col z-40',
-          'lg:translate-x-0 lg:static lg:z-auto'
+          'lg:relative lg:z-auto'
         )}
       >
       {/* Logo */}
