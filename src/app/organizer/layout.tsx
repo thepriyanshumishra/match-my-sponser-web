@@ -17,14 +17,14 @@ export default function OrganizerLayout({
   useEffect(() => {
     const user = getCurrentUser();
     if (!user) {
-      router.push('/login');
+      window.location.href = '/login';
       return;
     }
     if (user.role !== 'organizer') {
-      router.push('/sponsor/dashboard');
+      window.location.href = '/sponsor/dashboard';
       return;
     }
-  }, [router]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 relative">
