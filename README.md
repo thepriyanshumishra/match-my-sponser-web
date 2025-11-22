@@ -1,6 +1,29 @@
+<div align="center">
+
 # 🎯 Match My Sponsor
 
-A modern web platform connecting event organizers with sponsors, featuring a premium glassmorphism UI inspired by macOS design.
+### *Connect. Collaborate. Succeed.*
+
+**A modern web platform connecting event organizers with sponsors**  
+*Featuring premium glassmorphism UI inspired by macOS design*
+
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Now-6366f1?style=for-the-badge&labelColor=4f46e5)](https://matchmysponsor.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra/match-my-sponser-web)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
+
+![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+
+<img src="https://img.shields.io/badge/Cost-$0/month-success?style=for-the-badge" alt="Free" />
+<img src="https://img.shields.io/badge/Status-Production_Ready-success?style=for-the-badge" alt="Status" />
+
+</div>
+
+---
 
 ## ✨ Features
 
@@ -81,17 +104,19 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ### 🎯 Quick Demo Access
 
-Use these credentials to test the platform immediately:
+<div align="center">
 
-**Organizer Account:**
-- Email: `test.organizer@test.com`
-- Password: `iamorganizer`
+**Try it now with demo accounts!**
 
-**Sponsor Account:**
-- Email: `test.sponser@test.com`
-- Password: `iamsponser`
+| Role | Email | Password |
+|------|-------|----------|
+| 🎪 **Organizer** | `test.organizer@test.com` | `iamorganizer` |
+| 💼 **Sponsor** | `test.sponser@test.com` | `iamsponser` |
 
-Or click the demo buttons on the login page for instant access!
+[![Try Organizer Demo](https://img.shields.io/badge/🎪_Try_Organizer_Demo-Click_Here-6366f1?style=for-the-badge)](https://matchmysponsor.vercel.app/login)
+[![Try Sponsor Demo](https://img.shields.io/badge/💼_Try_Sponsor_Demo-Click_Here-8b5cf6?style=for-the-badge)](https://matchmysponsor.vercel.app/login)
+
+</div>
 
 ## 🎯 What Currently Works
 
@@ -203,7 +228,13 @@ Vercel will automatically deploy on every push to main branch.
 
 ## 👨‍💻 Author
 
-Developed by Priyanshu
+<div align="center">
+
+**Developed with ❤️ by [Priyanshu](https://github.com/thepriyanshumishra)**
+
+[![GitHub](https://img.shields.io/badge/GitHub-thepriyanshumishra-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra)
+
+</div>
 
 ## 📄 License
 
@@ -217,9 +248,22 @@ MIT License - feel free to use this project for learning and development.
 
 ---
 
-**Project Status**: Production Ready 🎉 (MVP Complete)
+<div align="center">
 
-**Current Features**:
+## 🌟 Star this repo if you find it helpful!
+
+[![Star on GitHub](https://img.shields.io/github/stars/thepriyanshumishra/match-my-sponser-web?style=social)](https://github.com/thepriyanshumishra/match-my-sponser-web)
+[![Fork on GitHub](https://img.shields.io/github/forks/thepriyanshumishra/match-my-sponser-web?style=social)](https://github.com/thepriyanshumishra/match-my-sponser-web/fork)
+
+### 📊 Project Status
+
+![Status](https://img.shields.io/badge/Status-Production_Ready_🎉-success?style=for-the-badge)
+![MVP](https://img.shields.io/badge/MVP-Complete-success?style=for-the-badge)
+
+</div>
+
+## ✅ Current Features
+
 - ✅ Glassmorphism UI with macOS-inspired design
 - ✅ Role-based authentication (Organizer/Sponsor)
 - ✅ Event creation and management
@@ -229,11 +273,23 @@ MIT License - feel free to use this project for learning and development.
 - ✅ Match creation and management
 - ✅ Full backend integration
 - ✅ Responsive design for all devices
+- ✅ Animated glassmorphism backgrounds
 
-**Upcoming Features**:
+## 🔮 Upcoming Features
+
 - 📊 Analytics dashboard
 - 📁 Deliverables management
 - 🔔 Email notifications
 - 👤 Profile settings
 
-Built with ❤️ for connecting event organizers with sponsors
+---
+
+<div align="center">
+
+**Built with ❤️ for connecting event organizers with sponsors**
+
+[![Live Demo](https://img.shields.io/badge/🚀_Visit_Live_Demo-matchmysponsor.vercel.app-6366f1?style=for-the-badge)](https://matchmysponsor.vercel.app/)
+
+*Made possible by 100% free tier services* 🎉
+
+</div>
