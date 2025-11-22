@@ -58,7 +58,7 @@ export function useAuth() {
         throw new Error(data.error || 'Login failed');
       }
 
-      const session: AuthSession = {
+      const session = {
         user: data.user,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
@@ -98,7 +98,7 @@ export function useAuth() {
         throw new Error(data.error || 'Signup failed');
       }
 
-      const session: AuthSession = {
+      const session = {
         user: data.user,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
