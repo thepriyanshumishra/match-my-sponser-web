@@ -7,13 +7,10 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { AnimatedBackground } from '@/components/shared/AnimatedBackground';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { setSession } from '@/lib/auth';
-
+import { setCurrentUser } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,20 +19,6 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // Get redirect URL from query params
-  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const redirectUrl = searchParams.get('redirect');
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (!loading && user) {
-      const dashboardPath = user.role === 'organizer' 
-        ? '/organizer/dashboard' 
-        : '/sponsor/dashboard';
-      router.replace(dashboardPath);
-    }
-  }, [user, loading, router]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -56,34 +39,23 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Create demo accounts on component mount
-  useEffect(() => {
-    const createDemoAccounts = () => {
-      const existingAccounts = localStorage.getItem('demo_accounts');
-      if (!existingAccounts) {
-        const demoAccounts = [
-          {
-            id: 'demo-organizer-1',
-            email: 'organizer@demo.com',
-            name: 'Alex Johnson',
-            role: 'organizer',
-            password: 'demo123',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 'demo-sponsor-1',
-            email: 'sponsor@demo.com',
-            name: 'Sarah Chen',
-            role: 'sponsor',
-            password: 'demo123',
-            createdAt: new Date().toISOString()
-          }
-        ];
-        localStorage.setItem('demo_accounts', JSON.stringify(demoAccounts));
-      }
-    };
-    createDemoAccounts();
-  }, []);
+  // Demo accounts
+  const demoAccounts = [
+    {
+      id: 'demo-organizer-1',
+      email: 'test.organizer@test.com',
+      name: 'Alex Johnson',
+      role: 'organizer' as const,
+      password: 'iamorganizer'
+    },
+    {
+      id: 'demo-sponsor-1',
+      email: 'test.sponser@test.com',
+      name: 'Sarah Chen',
+      role: 'sponsor' as const,
+      password: 'iamsponser'
+    }
+  ];
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -97,37 +69,26 @@ export default function LoginPage() {
 
     try {
       // Check demo accounts first
-      const demoAccountsStr = localStorage.getItem('demo_accounts');
-      if (demoAccountsStr) {
-        const demoAccounts = JSON.parse(demoAccountsStr);
-        const demoAccount = demoAccounts.find(
-          (acc: any) => acc.email === formData.email && acc.password === formData.password
-        );
-        
-        if (demoAccount) {
-          // Store session for demo account
-          setSession({
-            user: {
-              id: demoAccount.id,
-              email: demoAccount.email,
-              name: demoAccount.name,
-              role: demoAccount.role,
-              createdAt: new Date(demoAccount.createdAt),
-              updatedAt: new Date()
-            },
-            accessToken: 'demo-token',
-            refreshToken: 'demo-refresh'
-          });
+      const demoAccount = demoAccounts.find(
+        (acc) => acc.email === formData.email && acc.password === formData.password
+      );
+      
+      if (demoAccount) {
+        // Set current user
+        setCurrentUser({
+          id: demoAccount.id,
+          email: demoAccount.email,
+          name: demoAccount.name,
+          role: demoAccount.role
+        });
 
-          // Use redirect URL if provided, otherwise default dashboard
-          const demoRedirectPath = redirectUrl || 
-            (demoAccount.role === 'organizer' 
-              ? '/organizer/dashboard' 
-              : '/sponsor/dashboard');
-          
-          window.location.href = demoRedirectPath;
-          return;
-        }
+        // Redirect to dashboard
+        const dashboardPath = demoAccount.role === 'organizer' 
+          ? '/organizer/dashboard' 
+          : '/sponsor/dashboard';
+        
+        router.push(dashboardPath);
+        return;
       }
 
       // Try regular API login
@@ -150,20 +111,15 @@ export default function LoginPage() {
         return;
       }
 
-      // Store session in localStorage
-      setSession({
-        user: data.user,
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
-      });
+      // Set current user
+      setCurrentUser(data.user);
 
       // Redirect to appropriate dashboard
-      const redirectPath = redirectUrl || 
-        (data.user.role === 'organizer' 
-          ? '/organizer/dashboard' 
-          : '/sponsor/dashboard');
+      const redirectPath = data.user.role === 'organizer' 
+        ? '/organizer/dashboard' 
+        : '/sponsor/dashboard';
       
-      window.location.href = redirectPath;
+      router.push(redirectPath);
     } catch (error) {
       setErrors({ form: 'An unexpected error occurred. Please try again.' });
     } finally {

@@ -17,7 +17,8 @@ import {
   X,
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import { useAuth } from '@/components/providers/AuthProvider';
+import { useRouter } from 'next/navigation';
+import { clearCurrentUser } from '@/lib/auth';
 
 interface SidebarProps {
   role: 'organizer' | 'sponsor';
@@ -46,7 +47,7 @@ const sponsorNavItems: NavItem[] = [
 
 export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const navItems = role === 'organizer' ? organizerNavItems : sponsorNavItems;
@@ -59,7 +60,8 @@ export function Sidebar({ role }: SidebarProps) {
   }, []);
 
   const handleLogout = () => {
-    logout();
+    clearCurrentUser();
+    router.push('/');
   };
 
   return (

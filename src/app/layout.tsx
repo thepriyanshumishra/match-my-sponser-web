@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
-import { AuthProvider } from '@/components/providers/AuthProvider';
 import { PWAInstallPrompt } from '@/components/shared/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/shared/OfflineIndicator';
 import { Analytics } from "@vercel/analytics/next";
@@ -131,11 +130,9 @@ export default function RootLayout({
       >
         <div>
           <ErrorBoundary>
-            <AuthProvider>
-              {children}
-              <PWAInstallPrompt />
-              <OfflineIndicator />
-            </AuthProvider>
+            {children}
+            <PWAInstallPrompt />
+            <OfflineIndicator />
           </ErrorBoundary>
         </div>
         <Analytics />

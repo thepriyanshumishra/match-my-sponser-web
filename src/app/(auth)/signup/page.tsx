@@ -104,18 +104,14 @@ export default function SignupPage() {
         return;
       }
 
-      const { setSession } = await import('@/lib/auth');
-      setSession({
-        user: data.user,
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
-      });
+      const { setCurrentUser } = await import('@/lib/auth');
+      setCurrentUser(data.user);
 
       const redirectPath = data.user.role === 'organizer' 
         ? '/organizer/dashboard' 
         : '/sponsor/dashboard';
       
-      window.location.href = redirectPath;
+      router.push(redirectPath);
     } catch (error) {
       setErrors({ form: 'An unexpected error occurred. Please try again.' });
     } finally {

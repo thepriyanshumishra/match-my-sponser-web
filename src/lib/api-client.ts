@@ -1,4 +1,4 @@
-import { getCurrentUser, getSession } from './auth';
+import { getCurrentUser } from './auth';
 import { createLocalMatch, getUserMatches } from './localStorage-chat';
 
 const API_BASE = '/api';
@@ -9,12 +9,8 @@ async function getAuthHeaders() {
   if (!user) {
     throw new Error('User not authenticated');
   }
-  const session = getSession();
-  if (!session?.accessToken) {
-    throw new Error('No authentication token');
-  }
   return {
-    'Authorization': `Bearer ${session.accessToken}`,
+    'Authorization': `Bearer demo-token`,
     'Content-Type': 'application/json',
   };
 }
