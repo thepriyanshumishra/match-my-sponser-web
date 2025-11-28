@@ -29,12 +29,12 @@ export function PWAInstallPrompt() {
     if (!deferredPrompt) return;
     
     try {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      await deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
       
       setDeferredPrompt(null);
       setShowPrompt(false);
-    } catch (error) {
+    } catch {
       setShowPrompt(false);
     }
   };

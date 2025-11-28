@@ -98,6 +98,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vercel.live" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="preload" href="/logo.png" as="image" />
         <meta name="theme-color" content="#667eea" />
         <meta name="color-scheme" content="light" />
         <link rel="canonical" href="https://matchmysponsor.com" />
