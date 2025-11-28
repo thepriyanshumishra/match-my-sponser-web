@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+import { CacheBuster } from '@/components/shared/CacheBuster';
 import { PWAInstallPrompt } from '@/components/shared/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/shared/OfflineIndicator';
 import { Analytics } from "@vercel/analytics/next";
@@ -130,6 +131,7 @@ export default function RootLayout({
       >
         <div>
           <ErrorBoundary>
+            <CacheBuster />
             {children}
             <PWAInstallPrompt />
             <OfflineIndicator />
