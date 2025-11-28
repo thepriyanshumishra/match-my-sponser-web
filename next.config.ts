@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 // Performance and SEO optimizations
 
 const nextConfig: NextConfig = {
-  reactCompiler: true,
   images: {
     remotePatterns: [
       {
@@ -31,9 +30,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-    optimizeCss: true,
-    webVitalsAttribution: ['CLS', 'LCP', 'FCP'],
-    webpackBuildWorker: false,
   },
   serverExternalPackages: ['@supabase/supabase-js'],
   rewrites: async () => [
