@@ -1,31 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Event, EventCategory, EventStatus } from '@/types/event';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    const token = authHeader?.replace('Bearer ', '');
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    if (!supabase) {
-      return NextResponse.json(
-        { error: 'Supabase not configured' },
-        { status: 503 }
-      );
-    }
-
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Invalid token' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -57,28 +41,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const authHeader = request.headers.get('authorization');
-    const token = authHeader?.replace('Bearer ', '');
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    if (!supabase) {
-      return NextResponse.json(
-        { error: 'Supabase not configured' },
-        { status: 503 }
-      );
-    }
-
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Invalid token' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -126,7 +94,7 @@ export async function POST(request: NextRequest) {
     const eventDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (eventDate < today) {
       return NextResponse.json(
         { error: 'Event date must be in the future' },

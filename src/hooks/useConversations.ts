@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { getCurrentUser } from '@/lib/auth';
+import { useState, useEffect, useCallback } from 'react';
+import { createClient } from '@/utils/supabase/client';
 import { getUserMatches, getMatchMessages } from '@/lib/localStorage-chat';
 
 interface Conversation {
@@ -15,23 +14,26 @@ interface Conversation {
 export function useConversations() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
-  const fetchConversations = async () => {
-    const user = getCurrentUser();
+  const fetchConversations = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       setLoading(false);
       return;
     }
 
-    // Use localStorage fallback if Supabase not configured
-    if (!supabase || process.env.NEXT_PUBLIC_USE_LOCALSTORAGE === 'true') {
-      const matches = getUserMatches(user.id, user.role as 'organizer' | 'sponsor');
+    // Use localStorage fallback if configured
+    if (process.env.NEXT_PUBLIC_USE_LOCALSTORAGE === 'true') {
+      // Need to get role from somewhere if not in user object, but user_metadata has it
+      const role = user.user_metadata.role;
+      const matches = getUserMatches(user.id, role as 'organizer' | 'sponsor');
       const convos: Conversation[] = matches.map(match => {
         const messages = getMatchMessages(match.id);
         const lastMessage = messages[messages.length - 1];
         return {
           id: match.id,
-          participantName: user.role === 'organizer' ? 'Demo Sponsor' : 'Demo Event',
+          participantName: role === 'organizer' ? 'Demo Sponsor' : 'Demo Event',
           lastMessage: lastMessage?.content || 'No messages yet',
           lastMessageTime: lastMessage ? new Date(lastMessage.createdAt) : new Date(match.createdAt),
           unreadCount: 0
@@ -61,10 +63,13 @@ export function useConversations() {
     }
 
     const { data: matches } = await query;
-    if (!matches) return;
+    if (!matches) {
+      setLoading(false);
+      return;
+    }
 
     const convos: Conversation[] = await Promise.all(matches.map(async (m: any) => {
-      const { data: msgs } = await supabase!.from('messages').select('content, created_at').eq('match_id', m.id).order('created_at', { ascending: false }).limit(1);
+      const { data: msgs } = await supabase.from('messages').select('content, created_at').eq('match_id', m.id).order('created_at', { ascending: false }).limit(1);
       return {
         id: m.id,
         participantName: profile.role === 'organizer' ? m.sponsors.company_name : m.events.name,
@@ -76,11 +81,11 @@ export function useConversations() {
 
     setConversations(convos.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime()));
     setLoading(false);
-  };
+  }, [supabase]);
 
   useEffect(() => {
     fetchConversations();
-  }, []);
+  }, [fetchConversations]);
 
   return { conversations, loading, refresh: fetchConversations };
 }

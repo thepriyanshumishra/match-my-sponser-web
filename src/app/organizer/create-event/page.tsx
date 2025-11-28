@@ -12,14 +12,19 @@ const fadeInUp = {
   transition: { duration: 0.5 },
 };
 
+import { createClient } from '@/utils/supabase/client';
+
+// ...
+
 export default function CreateEventPage() {
   const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
+  const supabase = createClient();
 
   const handleSubmit = async (formData: any) => {
     try {
-      const session = localStorage.getItem('auth_session');
-      const token = session ? JSON.parse(session).accessToken : null;
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
       const form = new FormData();
       form.append('name', formData.name);
@@ -29,7 +34,7 @@ export default function CreateEventPage() {
       form.append('date', formData.date);
       form.append('description', formData.description);
       form.append('sponsorshipRequirements', formData.sponsorshipRequirements);
-      
+
       if (formData.banner) {
         form.append('banner', formData.banner);
       }
@@ -48,7 +53,7 @@ export default function CreateEventPage() {
 
       await response.json();
       setShowSuccess(true);
-      
+
       // Redirect to dashboard after a short delay
       setTimeout(() => {
         router.push('/organizer/dashboard');
@@ -97,7 +102,7 @@ export default function CreateEventPage() {
   return (
     <div className="space-y-4 sm:space-y-6 p-4 lg:p-0">
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -112,7 +117,7 @@ export default function CreateEventPage() {
           <ArrowLeft size={18} className="sm:w-5 sm:h-5 group-hover:text-indigo-600 transition-colors" />
           <span className="group-hover:text-indigo-600 transition-colors text-sm sm:text-base">Back to Dashboard</span>
         </motion.button>
-        
+
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
           Create New Event
         </h1>

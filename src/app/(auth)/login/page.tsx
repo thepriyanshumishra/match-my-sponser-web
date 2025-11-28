@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { AnimatedBackground } from '@/components/shared/AnimatedBackground';
-import { setCurrentUser, clearCurrentUser } from '@/lib/auth';
+import { createClient } from '@/utils/supabase/client';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,18 +19,17 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const supabase = createClient();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
@@ -39,95 +38,42 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Demo accounts
-  const demoAccounts = [
-    {
-      id: 'demo-organizer-1',
-      email: 'test.organizer@test.com',
-      name: 'Alex Johnson',
-      role: 'organizer' as const,
-      password: 'iamorganizer'
-    },
-    {
-      id: 'demo-sponsor-1',
-      email: 'test.sponser@test.com',
-      name: 'Sarah Chen',
-      role: 'sponsor' as const,
-      password: 'iamsponser'
-    }
-  ];
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleLogin = async (email: string, pass: string) => {
     setIsLoading(true);
     setErrors({});
 
-    // Clear any existing auth data before login attempt
-    clearCurrentUser();
-
     try {
-      // Check demo accounts first
-      const demoAccount = demoAccounts.find(
-        (acc) => acc.email === formData.email && acc.password === formData.password
-      );
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password: pass,
+      });
 
-      if (demoAccount) {
-        // Set current user
-        setCurrentUser({
-          id: demoAccount.id,
-          email: demoAccount.email,
-          name: demoAccount.name,
-          role: demoAccount.role
-        });
+      if (error) {
+        setErrors({ form: error.message });
+        return;
+      }
 
-        // Redirect to dashboard
-        const dashboardPath = demoAccount.role === 'organizer'
+      if (data.user) {
+        // Check role from metadata
+        const role = data.user.user_metadata.role;
+        const dashboardPath = role === 'organizer'
           ? '/organizer/dashboard'
           : '/sponsor/dashboard';
 
         router.push(dashboardPath);
-        return;
+        router.refresh(); // Refresh to update middleware state
       }
-
-      // Try regular API login
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          rememberMe: formData.rememberMe,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setErrors({ form: data.error || 'Login failed. Please try again.' });
-        return;
-      }
-
-      // Set current user
-      setCurrentUser(data.user);
-
-      // Redirect to appropriate dashboard
-      const redirectPath = data.user.role === 'organizer'
-        ? '/organizer/dashboard'
-        : '/sponsor/dashboard';
-
-      router.push(redirectPath);
     } catch (error) {
       setErrors({ form: 'An unexpected error occurred. Please try again.' });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    await handleLogin(formData.email, formData.password);
   };
 
   return (
@@ -238,26 +184,14 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
-                onClick={() => {
-                  setFormData({
-                    email: 'test.organizer@test.com',
-                    password: 'iamorganizer',
-                    rememberMe: false
-                  });
-                }}
+                onClick={() => handleLogin('test.organizer@test.com', 'iamorganizer')}
                 className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border-2 border-indigo-200 text-indigo-700 rounded-xl font-medium hover:bg-indigo-50 hover:border-indigo-300 transition-all text-sm"
               >
                 🎪 Organizer Demo
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  setFormData({
-                    email: 'test.sponser@test.com',
-                    password: 'iamsponser',
-                    rememberMe: false
-                  });
-                }}
+                onClick={() => handleLogin('test.sponser@test.com', 'iamsponser')}
                 className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border-2 border-purple-200 text-purple-700 rounded-xl font-medium hover:bg-purple-50 hover:border-purple-300 transition-all text-sm"
               >
                 💼 Sponsor Demo

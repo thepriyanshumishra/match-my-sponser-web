@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import { PWAInstallPrompt } from '@/components/shared/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/shared/OfflineIndicator';
-import { AuthCleanupProvider } from '@/components/providers/AuthCleanupProvider';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -131,11 +130,9 @@ export default function RootLayout({
       >
         <div>
           <ErrorBoundary>
-            <AuthCleanupProvider>
-              {children}
-              <PWAInstallPrompt />
-              <OfflineIndicator />
-            </AuthCleanupProvider>
+            {children}
+            <PWAInstallPrompt />
+            <OfflineIndicator />
           </ErrorBoundary>
         </div>
         <Analytics />

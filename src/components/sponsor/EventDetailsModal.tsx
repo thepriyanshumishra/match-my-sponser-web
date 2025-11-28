@@ -8,7 +8,7 @@ import { Event } from '@/types/event';
 import Image from 'next/image';
 import { GlassButton } from '@/components/shared/GlassButton';
 import { createMatch } from '@/lib/api-client';
-import { getCurrentUser } from '@/lib/auth';
+import { createClient } from '@/utils/supabase/client';
 
 interface EventDetailsModalProps {
   event: Event | null;
@@ -20,16 +20,17 @@ interface EventDetailsModalProps {
 export function EventDetailsModal({ event, matchScore, isOpen, onClose }: EventDetailsModalProps) {
   const [isConnecting, setIsConnecting] = useState(false);
   const router = useRouter();
-  
+  const supabase = createClient();
+
   if (!event) return null;
 
   const handleExpressInterest = async () => {
-    const user = getCurrentUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       alert('Please log in to express interest');
       return;
     }
-    
+
     setIsConnecting(true);
     try {
       // For sponsors, we need to get their sponsor profile ID
@@ -106,7 +107,7 @@ export function EventDetailsModal({ event, matchScore, isOpen, onClose }: EventD
                   <div className="w-full h-full bg-gradient-to-br from-[#667eea] to-[#764ba2]" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                
+
                 {/* Close Button */}
                 <button
                   onClick={onClose}

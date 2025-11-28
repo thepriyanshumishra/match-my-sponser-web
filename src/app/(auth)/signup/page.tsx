@@ -8,7 +8,7 @@ import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/Input';
 import { AnimatedBackground } from '@/components/shared/AnimatedBackground';
-
+import { createClient } from '@/utils/supabase/client';
 
 type UserRole = 'organizer' | 'sponsor' | '';
 
@@ -25,6 +25,7 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const supabase = createClient();
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {};
@@ -84,34 +85,32 @@ export default function SignupPage() {
     setErrors({});
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.name.trim(),
+            role: formData.role,
+          },
         },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setErrors({ form: data.error || 'Signup failed. Please try again.' });
+      if (error) {
+        setErrors({ form: error.message });
         return;
       }
 
-      const { setCurrentUser } = await import('@/lib/auth');
-      setCurrentUser(data.user);
+      if (data.user) {
+        // If email confirmation is required, we should tell the user.
+        // But assuming it's not or we just redirect:
+        const redirectPath = formData.role === 'organizer'
+          ? '/organizer/dashboard'
+          : '/sponsor/dashboard';
 
-      const redirectPath = data.user.role === 'organizer'
-        ? '/organizer/dashboard'
-        : '/sponsor/dashboard';
-
-      router.push(redirectPath);
+        router.push(redirectPath);
+        router.refresh();
+      }
     } catch (error) {
       setErrors({ form: 'An unexpected error occurred. Please try again.' });
     } finally {
@@ -376,38 +375,12 @@ export default function SignupPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <Link
                     href="/login"
-                    onClick={() => {
-                      setTimeout(() => {
-                        const loginForm = document.querySelector('form');
-                        if (loginForm) {
-                          const emailInput = loginForm.querySelector('input[type="email"]') as HTMLInputElement;
-                          const passwordInput = loginForm.querySelector('input[type="password"]') as HTMLInputElement;
-                          if (emailInput && passwordInput) {
-                            emailInput.value = 'test.organizer@test.com';
-                            passwordInput.value = 'iamorganizer';
-                          }
-                        }
-                      }, 100);
-                    }}
                     className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border-2 border-indigo-200 text-indigo-700 rounded-xl font-medium hover:bg-indigo-50 hover:border-indigo-300 transition-all text-sm text-center"
                   >
                     🎪 Organizer Demo
                   </Link>
                   <Link
                     href="/login"
-                    onClick={() => {
-                      setTimeout(() => {
-                        const loginForm = document.querySelector('form');
-                        if (loginForm) {
-                          const emailInput = loginForm.querySelector('input[type="email"]') as HTMLInputElement;
-                          const passwordInput = loginForm.querySelector('input[type="password"]') as HTMLInputElement;
-                          if (emailInput && passwordInput) {
-                            emailInput.value = 'test.sponser@test.com';
-                            passwordInput.value = 'iamsponser';
-                          }
-                        }
-                      }, 100);
-                    }}
                     className="px-4 py-2.5 bg-white/60 backdrop-blur-sm border-2 border-purple-200 text-purple-700 rounded-xl font-medium hover:bg-purple-50 hover:border-purple-300 transition-all text-sm text-center"
                   >
                     💼 Sponsor Demo

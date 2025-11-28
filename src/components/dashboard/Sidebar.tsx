@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useRouter } from 'next/navigation';
-import { clearCurrentUser } from '@/lib/auth';
+import { createClient } from '@/utils/supabase/client';
 
 interface SidebarProps {
   role: 'organizer' | 'sponsor';
@@ -51,6 +51,7 @@ export function Sidebar({ role }: SidebarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const navItems = role === 'organizer' ? organizerNavItems : sponsorNavItems;
+  const supabase = createClient();
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -59,10 +60,10 @@ export function Sidebar({ role }: SidebarProps) {
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
-  const handleLogout = () => {
-    clearCurrentUser();
-    // Force complete logout by reloading to home page
-    window.location.href = '/';
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
   };
 
   return (
@@ -91,64 +92,64 @@ export function Sidebar({ role }: SidebarProps) {
           isDesktop ? 'translate-x-0' : (isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full')
         )}
       >
-      {/* Logo */}
-      <div className="p-4 lg:p-6 border-b border-gray-200">
-        <Link href={`/${role}/dashboard`} className="flex items-center gap-3 group">
-          <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center bg-white">
-            <Image
-              src="/logo.png"
-              alt="Match My Sponsor Logo"
-              width={48}
-              height={48}
-              className="object-contain"
-              priority
-            />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
-              Match My Sponsor
-            </h1>
-            <p className="text-xs text-gray-500 capitalize">{role}</p>
-          </div>
-        </Link>
-      </div>
+        {/* Logo */}
+        <div className="p-4 lg:p-6 border-b border-gray-200">
+          <Link href={`/${role}/dashboard`} className="flex items-center gap-3 group">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow flex items-center justify-center bg-white">
+              <Image
+                src="/logo.png"
+                alt="Match My Sponsor Logo"
+                width={48}
+                height={48}
+                className="object-contain"
+                priority
+              />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                Match My Sponsor
+              </h1>
+              <p className="text-xs text-gray-500 capitalize">{role}</p>
+            </div>
+          </Link>
+        </div>
 
-      {/* Navigation Items */}
-      <nav className="flex-1 p-2 lg:p-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
+        {/* Navigation Items */}
+        <nav className="flex-1 p-2 lg:p-4 space-y-1 overflow-y-auto">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            const Icon = item.icon;
 
-          return (
-            <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
-              <div
-                className={clsx(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]',
-                  {
-                    'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg':
-                      isActive,
-                    'text-gray-700 hover:bg-gray-100': !isActive,
-                  }
-                )}
-              >
-                <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
-              </div>
-            </Link>
-          );
-        })}
-      </nav>
+            return (
+              <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
+                <div
+                  className={clsx(
+                    'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]',
+                    {
+                      'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg':
+                        isActive,
+                      'text-gray-700 hover:bg-gray-100': !isActive,
+                    }
+                  )}
+                >
+                  <Icon size={20} />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+              </Link>
+            );
+          })}
+        </nav>
 
-      {/* Logout Button */}
-      <div className="p-2 lg:p-4 border-t border-gray-200">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-        >
-          <LogOut size={20} />
-          <span className="font-medium">Logout</span>
-        </button>
-      </div>
+        {/* Logout Button */}
+        <div className="p-2 lg:p-4 border-t border-gray-200">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <LogOut size={20} />
+            <span className="font-medium">Logout</span>
+          </button>
+        </div>
       </aside>
     </>
   );

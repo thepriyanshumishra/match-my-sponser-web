@@ -7,7 +7,6 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { EventCard } from "@/components/dashboard/EventCard";
 import { Event } from "@/types/event";
 import { useRouter } from "next/navigation";
-import { validateSession, isAuthenticated } from "@/lib/auth";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -35,12 +34,6 @@ export default function OrganizerDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Validate session on dashboard load
-    if (!isAuthenticated() || !validateSession()) {
-      router.push('/login');
-      return;
-    }
-
     const fetchDashboardData = async () => {
       try {
         // Fetch events from API

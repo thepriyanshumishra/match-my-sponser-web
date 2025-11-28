@@ -8,6 +8,7 @@ import { FilterPanel, EventFilters } from '@/components/sponsor/FilterPanel';
 import { EventDiscoveryCard } from '@/components/sponsor/EventDiscoveryCard';
 import { EventDetailsModal } from '@/components/sponsor/EventDetailsModal';
 import { Event } from '@/types/event';
+import { calculateMatchScore } from '@/lib/matching';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -163,7 +164,7 @@ export default function DiscoverEventsPage() {
       budgetRange: { min: 50000, max: 150000 },
       location: 'San Francisco, CA',
       preferences: {
-        categories: ['hackathon', 'workshop', 'competition'] as const,
+        categories: ['hackathon', 'workshop', 'competition'] as import('@/types/event').EventCategory[],
         audienceSize: { min: 200, max: 1000 },
       },
       createdAt: new Date(),
@@ -172,7 +173,6 @@ export default function DiscoverEventsPage() {
 
     const scores: Record<string, number> = {};
     filtered.forEach((event) => {
-      const { calculateMatchScore } = require('@/lib/matching');
       const result = calculateMatchScore(event, currentSponsor);
       scores[event.id] = result.score;
     });

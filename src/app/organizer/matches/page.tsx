@@ -8,6 +8,7 @@ import { FilterPanel, SponsorFilters } from '@/components/organizer/FilterPanel'
 import { SponsorCard } from '@/components/organizer/SponsorCard';
 import { SponsorDetailsModal } from '@/components/organizer/SponsorDetailsModal';
 import { Sponsor } from '@/types/sponsor';
+import { calculateMatchScore } from '@/lib/matching';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -166,7 +167,6 @@ export default function FindSponsorsPage() {
 
     const scores: Record<string, number> = {};
     filtered.forEach((sponsor) => {
-      const { calculateMatchScore } = require('@/lib/matching');
       const result = calculateMatchScore(currentEvent, sponsor);
       scores[sponsor.id] = result.score;
     });

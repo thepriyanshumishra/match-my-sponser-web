@@ -1,17 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { ConversationList } from '@/components/chat/ConversationList';
 import { MessageList } from '@/components/chat/MessageList';
-import { getCurrentUser } from '@/lib/auth';
+import { createClient } from '@/utils/supabase/client';
 import { useChat } from '@/hooks/useChat';
 import { useConversations } from '@/hooks/useConversations';
 
 function ChatArea({ conversationId, conversations, onBack }: { conversationId: string | null; conversations: any[]; onBack?: () => void }) {
   const [newMessage, setNewMessage] = useState('');
-  const currentUser = getCurrentUser();
+  const [currentUserId, setCurrentUserId] = useState<string>('');
   const { messages, loading, sendMessage } = useChat(conversationId);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setCurrentUserId(user.id);
+    };
+    getUser();
+  }, [supabase]);
 
   const handleSend = async () => {
     if (!newMessage.trim()) return;
@@ -44,7 +53,7 @@ function ChatArea({ conversationId, conversations, onBack }: { conversationId: s
       {loading ? (
         <div className="flex-1 flex items-center justify-center text-gray-500">Loading...</div>
       ) : (
-        <MessageList messages={messages.map(m => ({ id: m.id, senderId: m.sender_id, content: m.content, timestamp: new Date(m.created_at) }))} currentUserId={currentUser?.id || ''} />
+        <MessageList messages={messages.map(m => ({ id: m.id, senderId: m.sender_id, content: m.content, timestamp: new Date(m.created_at) }))} currentUserId={currentUserId} />
       )}
       <div className="p-3 sm:p-4 border-t border-white/20">
         <div className="flex gap-2">
@@ -89,7 +98,7 @@ export default function OrganizerChatPage() {
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-4 lg:mb-6">
         Messages
       </h1>
-      
+
       {conversations.length === 0 ? (
         <div className="glass-card p-6 sm:p-8 lg:p-12 text-center">
           <p className="text-gray-600 text-base sm:text-lg">No conversations yet</p>
