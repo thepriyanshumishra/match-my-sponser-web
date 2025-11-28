@@ -230,7 +230,11 @@ Vercel will automatically deploy on every push to main branch.
 
 <div align="center">
 
-**Developed with ❤️ by [Priyanshu](https://github.com/thepriyanshumishra)**
+**Developed with ❤️ by Team Dhairya 
+Members:[Priyanshu Mishra](https://github.com/thepriyanshumishra)
+Aashish Kumar
+Aditya Yadav
+Sparsh Srivastva**
 
 [![GitHub](https://img.shields.io/badge/GitHub-thepriyanshumishra-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra)
 
