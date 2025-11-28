@@ -1,32 +1,22 @@
 {
-  "functions": {
-    "app/**": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "headers": [
     {
-      "source": "/_next/static/chunks/(.*)",
+      "source": "/_next/static/chunks/(.*).js",
       "headers": [
         {
           "key": "Content-Type",
           "value": "application/javascript; charset=utf-8"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
     {
-      "source": "/_next/static/(.*)",
+      "source": "/_next/static/(.*).js", 
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
         }
       ]
     }
-  ],
-
+  ]
 }
