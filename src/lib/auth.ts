@@ -91,7 +91,7 @@ export const getCurrentUser = (): User | null => {
       }
       
       return user;
-    } catch (error) {
+    } catch {
       // If parsing fails, clear corrupted data
       clearCurrentUser();
       return null;
@@ -106,7 +106,7 @@ export const clearCurrentUser = () => {
 
 export const isAuthenticated = (): boolean => {
   const user = getCurrentUser();
-  return user !== null && user.id && user.email && user.role;
+  return user !== null && !!user.id && !!user.email && !!user.role;
 };
 
 export const getUserRole = (): 'organizer' | 'sponsor' | null => {

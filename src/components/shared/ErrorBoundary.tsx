@@ -28,7 +28,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center p-4">
           <GlassCard className="max-w-md text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h2>
-            <p className="text-gray-600 mb-6">We're sorry for the inconvenience. Please try refreshing the page.</p>
+            <p className="text-gray-600 mb-6">We&apos;re sorry for the inconvenience. Please try refreshing the page.</p>
             <GlassButton
               variant="primary"
               onClick={() => window.location.reload()}

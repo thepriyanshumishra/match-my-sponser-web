@@ -134,7 +134,7 @@ export default function SponsorDashboard() {
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
           Dashboard
         </h1>
-        <p className="text-sm sm:text-base text-gray-600">Welcome back! Here's an overview of your sponsorship opportunities.</p>
+        <p className="text-sm sm:text-base text-gray-600">Welcome back! Here&apos;s an overview of your sponsorship opportunities.</p>
       </motion.div>
 
       {/* Stats Section */}
