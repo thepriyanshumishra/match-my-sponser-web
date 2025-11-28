@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
     optimizeCss: true,
     webVitalsAttribution: ['CLS', 'LCP', 'FCP'],
-    webpackBuildWorker: true,
+    webpackBuildWorker: false,
   },
   serverExternalPackages: ['@supabase/supabase-js'],
   rewrites: async () => [
@@ -43,6 +43,28 @@ const nextConfig: NextConfig = {
     },
   ],
   headers: async () => [
+    {
+      source: '/_next/static/chunks/(.*).js',
+      headers: [
+        {
+          key: 'Content-Type',
+          value: 'application/javascript; charset=utf-8'
+        },
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable'
+        }
+      ]
+    },
+    {
+      source: '/_next/static/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable'
+        }
+      ]
+    },
     {
       source: '/(.*)',
       headers: [
@@ -55,16 +77,8 @@ const nextConfig: NextConfig = {
           value: 'DENY'
         },
         {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff'
-        },
-        {
           key: 'Referrer-Policy',
           value: 'origin-when-cross-origin'
-        },
-        {
-          key: 'Cache-Control',
-          value: 'public, max-age=31536000, immutable'
         }
       ]
     },
