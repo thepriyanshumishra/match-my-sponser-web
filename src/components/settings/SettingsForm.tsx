@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Upload, Save, Loader2 } from 'lucide-react';
 import { profileApi, Profile } from '@/lib/api/profile';
+import { AvatarSelector } from './AvatarSelector';
 
 export function SettingsForm() {
     const [profile, setProfile] = useState<Profile | null>(null);
@@ -84,32 +85,41 @@ export function SettingsForm() {
                 </h2>
 
                 <div className="space-y-6">
-                    {/* Avatar Section */}
-                    <div className="flex flex-col sm:flex-row items-center gap-6">
-                        <div className="relative group">
-                            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
-                                {avatarUrl ? (
-                                    <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-400">
-                                        <User size={40} />
+                    {/* Avatar Selection */}
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-center gap-6">
+                            <div className="relative group">
+                                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+                                    {avatarUrl ? (
+                                        <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-400">
+                                            <User size={40} />
+                                        </div>
+                                    )}
+                                </div>
+                                <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full">
+                                    <Upload className="text-white" size={24} />
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
+                                </label>
+                                {uploading && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+                                        <Loader2 className="animate-spin text-white" size={24} />
                                     </div>
                                 )}
                             </div>
-                            <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full">
-                                <Upload className="text-white" size={24} />
-                                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
-                            </label>
-                            {uploading && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
-                                    <Loader2 className="animate-spin text-white" size={24} />
-                                </div>
-                            )}
+                            <div className="text-center sm:text-left">
+                                <h3 className="text-lg font-semibold text-gray-900">Profile Photo</h3>
+                                <p className="text-sm text-gray-500 mb-2">Upload a custom photo or choose an avatar below</p>
+                                <p className="text-xs text-gray-400">JPG, PNG or GIF. Max 2MB.</p>
+                            </div>
                         </div>
-                        <div className="text-center sm:text-left">
-                            <h3 className="text-lg font-semibold text-gray-900">Profile Photo</h3>
-                            <p className="text-sm text-gray-500 mb-2">Click the image to upload a new photo</p>
-                            <p className="text-xs text-gray-400">JPG, PNG or GIF. Max 2MB.</p>
+
+                        <div className="border-t border-gray-100 pt-6">
+                            <AvatarSelector
+                                currentAvatarUrl={avatarUrl}
+                                onSelect={(url) => setAvatarUrl(url)}
+                            />
                         </div>
                     </div>
 
