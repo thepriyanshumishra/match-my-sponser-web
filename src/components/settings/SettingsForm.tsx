@@ -64,6 +64,24 @@ export function SettingsForm() {
         }
     };
 
+    const [showAvatarModal, setShowAvatarModal] = useState(false);
+
+    const handleAvatarSelect = async (file: File) => {
+        setUploading(true);
+        try {
+            const url = await profileApi.uploadAvatar(file);
+            if (url) {
+                setAvatarUrl(url);
+                setShowAvatarModal(false);
+            }
+        } catch (error) {
+            console.error('Failed to upload avatar:', error);
+            alert('Failed to upload avatar.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center py-12">
@@ -86,40 +104,44 @@ export function SettingsForm() {
 
                 <div className="space-y-6">
                     {/* Avatar Selection */}
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-center gap-6">
-                            <div className="relative group">
-                                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
-                                    {avatarUrl ? (
-                                        <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-400">
-                                            <User size={40} />
-                                        </div>
-                                    )}
-                                </div>
-                                <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full">
-                                    <Upload className="text-white" size={24} />
-                                    <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
-                                </label>
-                                {uploading && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
-                                        <Loader2 className="animate-spin text-white" size={24} />
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                        <div className="relative group">
+                            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+                                {avatarUrl ? (
+                                    <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-400">
+                                        <User size={40} />
                                     </div>
                                 )}
                             </div>
-                            <div className="text-center sm:text-left">
-                                <h3 className="text-lg font-semibold text-gray-900">Profile Photo</h3>
-                                <p className="text-sm text-gray-500 mb-2">Upload a custom photo or choose an avatar below</p>
-                                <p className="text-xs text-gray-400">JPG, PNG or GIF. Max 2MB.</p>
-                            </div>
+                            <button
+                                onClick={() => setShowAvatarModal(true)}
+                                className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full border-none outline-none"
+                            >
+                                <Upload className="text-white" size={24} />
+                            </button>
+                            {uploading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+                                    <Loader2 className="animate-spin text-white" size={24} />
+                                </div>
+                            )}
                         </div>
-
-                        <div className="border-t border-gray-100 pt-6">
-                            <AvatarSelector
-                                currentAvatarUrl={avatarUrl}
-                                onSelect={(url) => setAvatarUrl(url)}
-                            />
+                        <div className="text-center sm:text-left">
+                            <h3 className="text-lg font-semibold text-gray-900">Profile Photo</h3>
+                            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                                <button
+                                    onClick={() => setShowAvatarModal(true)}
+                                    className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors"
+                                >
+                                    Choose Avatar
+                                </button>
+                                <label className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer">
+                                    Upload Custom
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
+                                </label>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-2">JPG, PNG or GIF. Max 2MB.</p>
                         </div>
                     </div>
 
@@ -169,6 +191,26 @@ export function SettingsForm() {
                     </div>
                 </div>
             </motion.div>
+
+            {/* Avatar Selection Modal */}
+            {showAvatarModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+                        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-900">Select an Avatar</h3>
+                            <button
+                                onClick={() => setShowAvatarModal(false)}
+                                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                        <div className="p-6 overflow-y-auto">
+                            <AvatarSelector onSelect={handleAvatarSelect} />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

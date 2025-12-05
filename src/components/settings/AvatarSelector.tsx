@@ -1,45 +1,88 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState, useRef } from 'react';
 import { clsx } from 'clsx';
-import { User, Sparkles, Bot, Smile, Zap } from 'lucide-react';
+import { User, Sparkles, Bot, Smile, Zap, Loader2 } from 'lucide-react';
 
 interface AvatarSelectorProps {
-    currentAvatarUrl?: string;
-    onSelect: (url: string) => void;
+    onSelect: (file: File) => Promise<void>;
 }
 
 const CATEGORIES = [
-    { id: 'adventurer', name: 'Adventurer', icon: Sparkles, style: 'adventurer' },
-    { id: 'fun-emoji', name: 'Fun Emoji', icon: Smile, style: 'fun-emoji' },
-    { id: 'bottts', name: 'Robots', icon: Bot, style: 'bottts' },
-    { id: 'lorelei', name: 'Lorelei', icon: Zap, style: 'lorelei' },
+    { id: '3d', name: '3D Cute', icon: Sparkles, sheet: '/avatars/sheet-3d.png' },
+    { id: 'emoji', name: 'Emoji', icon: Smile, sheet: '/avatars/sheet-emoji.png' },
+    { id: 'anime', name: 'Anime', icon: Zap, sheet: '/avatars/sheet-anime.png' },
+    { id: 'pixel', name: 'Pixel', icon: Bot, sheet: '/avatars/sheet-pixel.png' },
 ];
 
-const DEFAULT_AVATAR = "https://api.dicebear.com/9.x/initials/svg?seed=Guest&backgroundColor=e5e7eb&textColor=374151";
+const GRID_SIZE = 5; // 5x5 grid
+const TOTAL_AVATARS = 25;
 
-export function AvatarSelector({ currentAvatarUrl, onSelect }: AvatarSelectorProps) {
+export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
     const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
-    const [customSeed, setCustomSeed] = useState('');
+    const [processing, setProcessing] = useState<number | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    // Generate 20 seeds for the current category
-    const seeds = Array.from({ length: 20 }, (_, i) => `${activeCategory}-${i}`);
+    const handleSelect = async (index: number) => {
+        if (processing !== null) return;
+        setProcessing(index);
 
-    const getAvatarUrl = (style: string, seed: string) => {
-        return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}`;
+        try {
+            const category = CATEGORIES.find(c => c.id === activeCategory);
+            if (!category) return;
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = category.sheet;
+
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Calculate position
+            // The sprite sheet is a 5x5 grid.
+            // We assume the image is square.
+            const spriteWidth = img.width / GRID_SIZE;
+            const spriteHeight = img.height / GRID_SIZE;
+
+            const col = index % GRID_SIZE;
+            const row = Math.floor(index / GRID_SIZE);
+
+            canvas.width = spriteWidth;
+            canvas.height = spriteHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(
+                img,
+                col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight, // Source
+                0, 0, canvas.width, canvas.height // Destination
+            );
+
+            canvas.toBlob(async (blob) => {
+                if (blob) {
+                    const file = new File([blob], `avatar-${category.id}-${index}.png`, { type: 'image/png' });
+                    await onSelect(file);
+                }
+                setProcessing(null);
+            }, 'image/png');
+
+        } catch (error) {
+            console.error('Error extracting avatar:', error);
+            setProcessing(null);
+        }
     };
 
     return (
         <div className="space-y-6">
+            <canvas ref={canvasRef} className="hidden" />
+
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Choose an Avatar</h3>
-                <button
-                    type="button"
-                    onClick={() => onSelect(DEFAULT_AVATAR)}
-                    className="text-sm text-gray-500 hover:text-indigo-600 flex items-center gap-2 transition-colors"
-                >
-                    <User size={16} />
-                    Use Default Silhouette
-                </button>
+                <h3 className="text-lg font-semibold text-gray-900">Choose a Premium Avatar</h3>
             </div>
 
             {/* Category Tabs */}
@@ -67,36 +110,43 @@ export function AvatarSelector({ currentAvatarUrl, onSelect }: AvatarSelectorPro
             </div>
 
             {/* Avatar Grid */}
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4 max-h-64 overflow-y-auto p-2 scrollbar-thin">
-                {seeds.map((seed) => {
-                    const style = CATEGORIES.find(c => c.id === activeCategory)?.style || 'adventurer';
-                    const url = getAvatarUrl(style, seed);
-                    const isSelected = currentAvatarUrl === url;
+            <div className="grid grid-cols-5 gap-3 max-h-80 overflow-y-auto p-2 scrollbar-thin">
+                {Array.from({ length: TOTAL_AVATARS }).map((_, index) => {
+                    const category = CATEGORIES.find(c => c.id === activeCategory);
+                    if (!category) return null;
+
+                    const col = index % GRID_SIZE;
+                    const row = Math.floor(index / GRID_SIZE);
+
+                    // Calculate background position percentages
+                    const xPos = (col / (GRID_SIZE - 1)) * 100;
+                    const yPos = (row / (GRID_SIZE - 1)) * 100;
 
                     return (
                         <button
-                            key={seed}
+                            key={index}
                             type="button"
-                            onClick={() => onSelect(url)}
+                            onClick={() => handleSelect(index)}
+                            disabled={processing !== null}
                             className={clsx(
-                                'relative aspect-square rounded-full overflow-hidden transition-all duration-200 hover:scale-110',
-                                isSelected ? 'ring-4 ring-indigo-600 ring-offset-2' : 'hover:ring-2 hover:ring-indigo-300 ring-offset-1'
+                                'relative aspect-square rounded-2xl overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg ring-2 ring-transparent hover:ring-indigo-400',
+                                processing === index && 'opacity-70 cursor-wait'
                             )}
+                            style={{
+                                backgroundImage: `url(${category.sheet})`,
+                                backgroundSize: '500% 500%',
+                                backgroundPosition: `${xPos}% ${yPos}%`,
+                            }}
                         >
-                            <Image
-                                src={url}
-                                alt={`Avatar ${seed}`}
-                                fill
-                                className="object-cover bg-gray-50"
-                            />
+                            {processing === index && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+                                    <Loader2 className="animate-spin text-white" size={20} />
+                                </div>
+                            )}
                         </button>
                     );
                 })}
             </div>
-
-            <p className="text-xs text-gray-500 text-center">
-                Powered by <a href="https://dicebear.com" target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline">DiceBear</a>
-            </p>
         </div>
     );
 }
