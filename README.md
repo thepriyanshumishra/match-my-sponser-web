@@ -163,18 +163,16 @@ The project features a custom glassmorphism design system inspired by modern mac
 - Typography: High-contrast dark text on light backgrounds
 
 
-### ❤️ Team Dhairya
+## 👨‍💻 Author
 
-[<img src="https://github.com/thepriyanshumishra.png" width="50">](https://github.com/thepriyanshumishra)
-[<img src="https://github.com/theaashishkashyap.png" width="50">](https://github.com/theaashishkashyap)
-[<img src="https://github.com/adityayadavofficial.png" width="50">](https://github.com/adityayadavofficial)
-[<img src="https://github.com/thesparshsrivastava.png" width="50">](https://github.com/thesparshsrivastava)
+<div align="center">
 
+### ❤️ Developed by Team Dhairya
 
-
-
-
-<h3 align="center">Developed with ❤️ by <b>Team Dhairya</b></h3>
+[![GitHub](https://img.shields.io/badge/GitHub-thepriyanshumishra-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra)
+[![GitHub](https://img.shields.io/badge/GitHub-theaashishkashyap-181717?style=for-the-badge&logo=github)](https://github.com/theaashishkashyap)
+[![GitHub](https://img.shields.io/badge/GitHub-adityayadavofficial-181717?style=for-the-badge&logo=github)](https://github.com/adityayadavofficial)
+[![GitHub](https://img.shields.io/badge/GitHub-thesparshsrivastava-181717?style=for-the-badge&logo=github)](https://github.com/thesparshsrivastava)
 
 <p align="center">
   <a href="https://github.com/thepriyanshumishra">
@@ -190,28 +188,6 @@ The project features a custom glassmorphism design system inspired by modern mac
     <img src="https://github.com/thesparshsrivastava.png" width="70" style="border-radius:50%" />
   </a>
 </p>
-
-<p align="center">
-  <a href="https://github.com/thepriyanshumishra"><b>Priyanshu</b></a> •
-  <a href="https://github.com/theaashishkashyap"><b>Aashish</b></a> •
-  <a href="https://github.com/adityayadavofficial"><b>Aditya</b></a> •
-  <a href="https://github.com/thesparshsrivastava"><b>Sparsh</b></a>
-</p>
-
-
-
-
-## 👨‍💻 Author
-
-<div align="center">
-
-### ❤️ Developed by Team Dhairya
-
-[![GitHub](https://img.shields.io/badge/GitHub-thepriyanshumishra-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra)
-[![GitHub](https://img.shields.io/badge/GitHub-theaashishkashyap-181717?style=for-the-badge&logo=github)](https://github.com/theaashishkashyap)
-[![GitHub](https://img.shields.io/badge/GitHub-adityayadavofficial-181717?style=for-the-badge&logo=github)](https://github.com/adityayadavofficial)
-[![GitHub](https://img.shields.io/badge/GitHub-thesparshsrivastava-181717?style=for-the-badge&logo=github)](https://github.com/thesparshsrivastava)
-
 
 </div>
 
