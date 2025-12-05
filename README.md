@@ -176,6 +176,7 @@ The project features a custom glassmorphism design system inspired by modern mac
 
 **Developed with ❤️ by Team Dhairya 
 Members:[Priyanshu Mishra](https://github.com/thepriyanshumishra)
+[Aashish Kumar](https://github.com/theaashishkashyap)
 Aashish Kumar
 Aditya Yadav
 Sparsh Srivastva**
