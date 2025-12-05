@@ -37,20 +37,7 @@
 - ♿ **Accessible** - WCAG 2.1 Level AA compliant
 - 🆓 **100% FREE Backend** - No monthly costs, perfect for MVPs
 
-## 🆓 Why 100% Free?
 
-This project is designed to be **completely free to run** using only free tier services:
-
-- **Supabase Free**: 500MB database + 1GB storage + 50K users
-- **Vercel Free**: Unlimited deployments + analytics
-- **No Email Costs**: In-app notifications + browser push
-- **No CDN Costs**: Next.js image optimization + compression
-
-Perfect for:
-- 🏆 **Hackathons** - Deploy without spending money
-- 🚀 **MVPs** - Validate ideas before investing
-- 🎓 **Learning** - Build real projects without costs
-- 💼 **Portfolios** - Showcase full-stack skills
 
 ## 🛠️ Tech Stack (100% FREE)
 
@@ -93,7 +80,7 @@ Edit `.env.local` and add your FREE credentials:
 - Supabase URL and Anon Key (from [supabase.com](https://supabase.com) - FREE tier)
 - Or set `NEXT_PUBLIC_USE_LOCALSTORAGE=true` for localStorage-only mode
 
-**For complete free setup guide, see [FREE_BACKEND_SETUP.md](./FREE_BACKEND_SETUP.md)**
+
 
 4. **Run the development server**
 ```bash
@@ -175,56 +162,13 @@ The project features a custom glassmorphism design system inspired by modern mac
 - Glass Backgrounds: Semi-transparent white with blur
 - Typography: High-contrast dark text on light backgrounds
 
-## 📝 Development Workflow
 
-### Git Workflow
 
-```bash
-git add .
-git commit -m "feat: description of changes"
-git push origin main
-```
 
-### Development Phases
 
-- ✅ Project Setup & Configuration
-- ✅ Glass UI Component Library
-- ✅ Landing Page
-- ✅ Authentication System
-- ✅ Dashboard Implementation
-- ✅ Matching Algorithm
-- 🚧 Real-time Chat (In Progress)
-- 📋 Analytics & Reporting (Planned)
 
-## 🧪 Testing
 
-```bash
-# Run linter
-npm run lint
 
-# Build for production
-npm run build
-
-# Start production server
-npm start
-```
-
-## 🚢 Deployment
-
-### Deploy to Vercel
-
-1. Push your code to GitHub
-2. Import project in [Vercel](https://vercel.com)
-3. Add environment variables in Vercel dashboard
-4. Deploy!
-
-Vercel will automatically deploy on every push to main branch.
-
-## 📚 Documentation
-
-- [FREE Backend Setup](./FREE_BACKEND_SETUP.md) - **Complete free setup guide**
-- [Project Plan](./plan.md) - Original project planning document
-- [Implementation Tasks](./task.md) - Detailed task breakdown (free-focused)
 
 ## 👨‍💻 Author
 
