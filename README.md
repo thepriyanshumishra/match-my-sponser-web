@@ -197,13 +197,13 @@ The project features a custom glassmorphism design system inspired by modern mac
 
 <div align="center">
 
-**Developed with ❤️ by Team Dhairya 
-Members:[Priyanshu Mishra](https://github.com/thepriyanshumishra)
-[Aashish Kumar](https://github.com/theaashishkashyap)
-[Aditya Yadav](https://github.com/adityayadavofficial)
-[Sparsh Srivastava](https://github.com/thesparshsrivastava)**
+### ❤️ Developed by Team Dhairya
 
 [![GitHub](https://img.shields.io/badge/GitHub-thepriyanshumishra-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra)
+[![GitHub](https://img.shields.io/badge/GitHub-theaashishkashyap-181717?style=for-the-badge&logo=github)](https://github.com/theaashishkashyap)
+[![GitHub](https://img.shields.io/badge/GitHub-adityayadavofficial-181717?style=for-the-badge&logo=github)](https://github.com/adityayadavofficial)
+[![GitHub](https://img.shields.io/badge/GitHub-thesparshsrivastava-181717?style=for-the-badge&logo=github)](https://github.com/thesparshsrivastava)
+
 
 </div>
 
