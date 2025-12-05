@@ -32,12 +32,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
   serverExternalPackages: ['@supabase/supabase-js'],
-  rewrites: async () => [
-    {
-      source: '/sw.js',
-      destination: '/_next/static/sw.js',
-    },
-  ],
+
   headers: async () => [
     {
       source: '/_next/static/chunks/(.*).js',

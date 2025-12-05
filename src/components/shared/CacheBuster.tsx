@@ -8,10 +8,10 @@ export function CacheBuster() {
     const clearCache = () => {
       // Clear localStorage
       localStorage.clear();
-      
+
       // Clear sessionStorage
       sessionStorage.clear();
-      
+
       // Force reload stylesheets
       const links = document.querySelectorAll('link[rel="stylesheet"]');
       links.forEach(link => {
@@ -27,9 +27,9 @@ export function CacheBuster() {
     };
 
     // Check if we need to clear cache (version mismatch)
-    const currentVersion = '1.0.1'; // Update this when you make changes
+    const currentVersion = '1.0.2'; // Update this when you make changes
     const storedVersion = localStorage.getItem('app_version');
-    
+
     if (storedVersion !== currentVersion) {
       clearCache();
       localStorage.setItem('app_version', currentVersion);
