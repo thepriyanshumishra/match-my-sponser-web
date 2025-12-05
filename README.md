@@ -163,6 +163,14 @@ The project features a custom glassmorphism design system inspired by modern mac
 - Typography: High-contrast dark text on light backgrounds
 
 
+### ❤️ Team Dhairya
+
+[<img src="https://github.com/thepriyanshumishra.png" width="50">](https://github.com/thepriyanshumishra)
+[<img src="https://github.com/theaashishkashyap.png" width="50">](https://github.com/theaashishkashyap)
+[<img src="https://github.com/adityayadavofficial.png" width="50">](https://github.com/adityayadavofficial)
+[<img src="https://github.com/thesparshsrivastava.png" width="50">](https://github.com/thesparshsrivastava)
+
+
 
 
 
