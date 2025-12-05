@@ -22,6 +22,8 @@ const staggerContainer = {
   },
 };
 
+import { analyticsApi } from "@/lib/api/analytics";
+
 export default function OrganizerDashboard() {
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
@@ -36,71 +38,13 @@ export default function OrganizerDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch events from API
-        const sampleEvents: Event[] = [
-          {
-            id: "1",
-            organizerId: "user-1",
-            name: "Tech Innovation Summit 2024",
-            category: "hackathon",
-            location: "San Francisco, CA",
-            audienceSize: 500,
-            date: new Date("2024-06-15"),
-            description:
-              "A premier technology event bringing together innovators and industry leaders.",
-            sponsorshipRequirements:
-              "Looking for tech companies interested in innovation and startups.",
-            bannerUrl:
-              "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop",
-            status: "published",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: "2",
-            organizerId: "user-1",
-            name: "Spring Music Festival",
-            category: "cultural",
-            location: "Austin, TX",
-            audienceSize: 2000,
-            date: new Date("2024-05-20"),
-            description:
-              "Annual spring music festival featuring local and international artists.",
-            sponsorshipRequirements:
-              "Seeking beverage and lifestyle brand sponsors.",
-            bannerUrl:
-              "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&h=400&fit=crop",
-            status: "published",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: "3",
-            organizerId: "user-1",
-            name: "College Sports Championship",
-            category: "sports",
-            location: "Los Angeles, CA",
-            audienceSize: 1500,
-            date: new Date("2024-07-10"),
-            description:
-              "Inter-college sports championship with multiple sporting events.",
-            sponsorshipRequirements:
-              "Looking for sports brands and energy drink sponsors.",
-            bannerUrl:
-              "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=400&fit=crop",
-            status: "draft",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ];
+        const [dashboardStats, dashboardEvents] = await Promise.all([
+          analyticsApi.getOrganizerStats(),
+          analyticsApi.getDashboardEvents(),
+        ]);
 
-        setEvents(sampleEvents);
-        setStats({
-          totalEvents: sampleEvents.length,
-          matches: 12,
-          messages: 8,
-          pendingDeliverables: 3,
-        });
+        setStats(dashboardStats);
+        setEvents(dashboardEvents);
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
       } finally {
