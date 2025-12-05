@@ -166,6 +166,29 @@ The project features a custom glassmorphism design system inspired by modern mac
 
 
 
+<h3 align="center">Developed with ❤️ by <b>Team Dhairya</b></h3>
+
+<p align="center">
+  <a href="https://github.com/thepriyanshumishra">
+    <img src="https://github.com/thepriyanshumishra.png" width="70" style="border-radius:50%" />
+  </a>
+  <a href="https://github.com/theaashishkashyap">
+    <img src="https://github.com/theaashishkashyap.png" width="70" style="border-radius:50%" />
+  </a>
+  <a href="https://github.com/adityayadavofficial">
+    <img src="https://github.com/adityayadavofficial.png" width="70" style="border-radius:50%" />
+  </a>
+  <a href="https://github.com/thesparshsrivastava">
+    <img src="https://github.com/thesparshsrivastava.png" width="70" style="border-radius:50%" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/thepriyanshumishra"><b>Priyanshu</b></a> •
+  <a href="https://github.com/theaashishkashyap"><b>Aashish</b></a> •
+  <a href="https://github.com/adityayadavofficial"><b>Aditya</b></a> •
+  <a href="https://github.com/thesparshsrivastava"><b>Sparsh</b></a>
+</p>
 
 
 
@@ -177,9 +200,8 @@ The project features a custom glassmorphism design system inspired by modern mac
 **Developed with ❤️ by Team Dhairya 
 Members:[Priyanshu Mishra](https://github.com/thepriyanshumishra)
 [Aashish Kumar](https://github.com/theaashishkashyap)
-Aashish Kumar
-Aditya Yadav
-Sparsh Srivastva**
+[Aditya Yadav](https://github.com/adityayadavofficial)
+[Sparsh Srivastava](https://github.com/thesparshsrivastava)**
 
 [![GitHub](https://img.shields.io/badge/GitHub-thepriyanshumishra-181717?style=for-the-badge&logo=github)](https://github.com/thepriyanshumishra)
 
