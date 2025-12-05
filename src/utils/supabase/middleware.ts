@@ -8,9 +8,32 @@ export async function updateSession(request: NextRequest) {
         },
     })
 
+    // Check for demo mode cookie
+    const demoRole = request.cookies.get('demo_role')?.value;
+    if (demoRole) {
+        // Allow access if demo role matches the path
+        if (request.nextUrl.pathname.startsWith('/organizer') && demoRole === 'organizer') {
+            return response;
+        }
+        if (request.nextUrl.pathname.startsWith('/sponsor') && demoRole === 'sponsor') {
+            return response;
+        }
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    // If env vars are missing and no demo cookie, redirect to login
+    if (!supabaseUrl || !supabaseKey) {
+        if (request.nextUrl.pathname.startsWith('/organizer') || request.nextUrl.pathname.startsWith('/sponsor')) {
+            return NextResponse.redirect(new URL('/login', request.url))
+        }
+        return response;
+    }
+
     const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        supabaseUrl,
+        supabaseKey,
         {
             cookies: {
                 getAll() {

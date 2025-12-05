@@ -48,7 +48,7 @@ export function useChat(matchId: string | null) {
       const channel = supabase
         .channel(`match:${matchId}`)
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${matchId}` },
-          (payload) => setMessages(prev => [...prev, payload.new as Message]))
+          (payload: any) => setMessages(prev => [...prev, payload.new as Message]))
         .subscribe();
 
       return () => { supabase.removeChannel(channel); };

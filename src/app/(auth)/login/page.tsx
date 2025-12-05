@@ -43,12 +43,33 @@ export default function LoginPage() {
     setErrors({});
 
     try {
+      // Check if using demo credentials
+      const isDemo =
+        (email === 'test.organizer@test.com' && pass === 'iamorganizer') ||
+        (email === 'test.sponser@test.com' && pass === 'iamsponser');
+
+      if (isDemo) {
+        // Set demo cookie
+        const role = email.includes('organizer') ? 'organizer' : 'sponsor';
+        document.cookie = `demo_role=${role}; path=/; max-age=86400`; // 1 day
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password: pass,
       });
 
       if (error) {
+        // If it's a demo user and Supabase fails (e.g. missing env vars), allow access anyway
+        if (isDemo) {
+          const role = email.includes('organizer') ? 'organizer' : 'sponsor';
+          const dashboardPath = role === 'organizer'
+            ? '/organizer/dashboard'
+            : '/sponsor/dashboard';
+          router.push(dashboardPath);
+          router.refresh();
+          return;
+        }
         setErrors({ form: error.message });
         return;
       }
@@ -64,6 +85,20 @@ export default function LoginPage() {
         router.refresh(); // Refresh to update middleware state
       }
     } catch (error) {
+      // Fallback for demo users on unexpected errors
+      const isDemo =
+        (email === 'test.organizer@test.com' && pass === 'iamorganizer') ||
+        (email === 'test.sponser@test.com' && pass === 'iamsponser');
+
+      if (isDemo) {
+        const role = email.includes('organizer') ? 'organizer' : 'sponsor';
+        const dashboardPath = role === 'organizer'
+          ? '/organizer/dashboard'
+          : '/sponsor/dashboard';
+        router.push(dashboardPath);
+        router.refresh();
+        return;
+      }
       setErrors({ form: 'An unexpected error occurred. Please try again.' });
     } finally {
       setIsLoading(false);

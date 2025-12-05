@@ -61,6 +61,9 @@ export function Sidebar({ role }: SidebarProps) {
   }, []);
 
   const handleLogout = async () => {
+    // Clear demo cookie
+    document.cookie = 'demo_role=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
     await supabase.auth.signOut();
     router.push('/');
     router.refresh();
