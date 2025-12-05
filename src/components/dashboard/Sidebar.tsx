@@ -15,6 +15,7 @@ import {
   LogOut,
   Menu,
   X,
+  Settings,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useRouter } from 'next/navigation';
@@ -36,6 +37,7 @@ const organizerNavItems: NavItem[] = [
   { label: 'Find Sponsors', href: '/organizer/matches', icon: Search },
   { label: 'Chat', href: '/organizer/chat', icon: MessageSquare },
   { label: 'Deliverables', href: '/organizer/deliverables', icon: CheckSquare },
+  { label: 'Settings', href: '/organizer/settings', icon: Settings },
 ];
 
 const sponsorNavItems: NavItem[] = [
@@ -43,6 +45,7 @@ const sponsorNavItems: NavItem[] = [
   { label: 'Discover Events', href: '/sponsor/discover', icon: Compass },
   { label: 'Chat', href: '/sponsor/chat', icon: MessageSquare },
   { label: 'Deliverables', href: '/sponsor/deliverables', icon: CheckSquare },
+  { label: 'Settings', href: '/sponsor/settings', icon: Settings },
 ];
 
 export function Sidebar({ role }: SidebarProps) {

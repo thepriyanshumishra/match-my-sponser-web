@@ -14,4 +14,5 @@ export interface Deliverable {
   // Joined fields
   sponsorName?: string;
   eventName?: string;
+  organizerName?: string;
 }

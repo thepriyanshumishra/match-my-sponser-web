@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     default: "Match My Sponsor - Connect Events with Sponsors",
     template: "%s | Match My Sponsor"
   },
-  description: "Connect event organizers with sponsors through AI-powered matching. Find perfect sponsorship opportunities for hackathons, conferences, sports events, and cultural festivals.",
-  keywords: ['event sponsorship', 'sponsor matching', 'event organizer', 'sponsor platform', 'hackathon sponsors', 'conference sponsorship', 'sports event sponsors', 'cultural event funding', 'startup events', 'tech conferences'],
-  authors: [{ name: 'Match My Sponsor', url: 'https://matchmysponsor.com' }],
+  description: "The #1 AI-powered platform connecting event organizers with sponsors. Find perfect sponsorship opportunities for hackathons, conferences, sports events, and cultural festivals.",
+  keywords: ['event sponsorship', 'sponsor matching', 'event organizer', 'sponsor platform', 'hackathon sponsors', 'conference sponsorship', 'sports event sponsors', 'cultural event funding', 'startup events', 'tech conferences', 'AI sponsorship matching'],
+  authors: [{ name: 'Match My Sponsor Team', url: 'https://matchmysponsor.com' }],
   creator: 'Match My Sponsor',
   publisher: 'Match My Sponsor',
   robots: {
@@ -78,6 +78,7 @@ export const metadata: Metadata = {
     google: 'your-google-verification-code',
   },
   category: 'technology',
+  applicationName: 'Match My Sponsor',
 };
 
 export const viewport = {

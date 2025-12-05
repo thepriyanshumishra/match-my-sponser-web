@@ -147,6 +147,31 @@ CREATE POLICY "Match participants can view conversations" ON conversations FOR S
   )
 );
 
+-- Notifications Table
+CREATE TABLE notifications (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  link TEXT,
+  read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS for Notifications
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own notifications"
+  ON notifications FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own notifications"
+  ON notifications FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- Function to create notification (can be called by triggers or API)
+-- For now, we'll insert directly via API or triggers
+
 -- Messages policies
 CREATE POLICY "Conversation participants can view messages" ON messages FOR SELECT USING (
   EXISTS (

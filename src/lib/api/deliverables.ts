@@ -15,7 +15,11 @@ export const deliverablesApi = {
         *,
         matches!inner (
           id,
-          events (name, organizer_id),
+          events (
+            name,
+            organizer_id,
+            profiles (name)
+          ),
           sponsors (company_name, user_id)
         )
       `)
@@ -41,6 +45,7 @@ export const deliverablesApi = {
             updatedAt: new Date(d.updated_at),
             sponsorName: d.matches?.sponsors?.company_name,
             eventName: d.matches?.events?.name,
+            organizerName: d.matches?.events?.profiles?.name,
         }));
     },
 

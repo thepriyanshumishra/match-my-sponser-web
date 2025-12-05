@@ -23,6 +23,8 @@ const staggerContainer = {
   },
 };
 
+import { analyticsApi } from '@/lib/api/analytics';
+
 export default function SponsorDashboard() {
   const router = useRouter();
   const [recommendedEvents, setRecommendedEvents] = useState<Event[]>([]);
@@ -43,61 +45,13 @@ export default function SponsorDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch recommended events from API
-        const recommendedData: Event[] = [
-          {
-            id: '1',
-            organizerId: 'org-1',
-            name: 'Tech Innovation Summit 2024',
-            category: 'hackathon',
-            location: 'San Francisco, CA',
-            audienceSize: 500,
-            date: new Date('2024-06-15'),
-            description: 'A premier technology event bringing together innovators and industry leaders.',
-            sponsorshipRequirements: 'Looking for tech companies interested in innovation and startups.',
-            bannerUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop',
-            status: 'published',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: '2',
-            organizerId: 'org-2',
-            name: 'Spring Music Festival',
-            category: 'cultural',
-            location: 'Austin, TX',
-            audienceSize: 2000,
-            date: new Date('2024-05-20'),
-            description: 'Annual spring music festival featuring local and international artists.',
-            sponsorshipRequirements: 'Seeking beverage and lifestyle brand sponsors.',
-            bannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=400&fit=crop',
-            status: 'published',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: '3',
-            organizerId: 'org-3',
-            name: 'College Sports Championship',
-            category: 'sports',
-            location: 'Los Angeles, CA',
-            audienceSize: 1500,
-            date: new Date('2024-07-10'),
-            description: 'Inter-college sports championship with multiple sporting events.',
-            sponsorshipRequirements: 'Looking for sports brands and energy drink sponsors.',
-            bannerUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=400&fit=crop',
-            status: 'published',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ];
+        const [sponsorStats, events] = await Promise.all([
+          analyticsApi.getSponsorStats(),
+          analyticsApi.getRecommendedEvents(),
+        ]);
 
-        setRecommendedEvents(recommendedData);
-        setStats({
-          eventsMatched: 8,
-          pendingApprovals: 3,
-          messages: 5,
-        });
+        setStats(sponsorStats);
+        setRecommendedEvents(events);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {

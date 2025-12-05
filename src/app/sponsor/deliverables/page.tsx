@@ -2,19 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
-
-interface Deliverable {
-  id: string;
-  matchId: string;
-  organizerName: string;
-  eventName: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'submitted' | 'approved' | 'rejected';
-  proofUrl?: string;
-  feedback?: string;
-  submittedAt?: Date;
-}
+import { deliverablesApi } from '@/lib/api/deliverables';
+import { Deliverable } from '@/types/deliverable';
 
 export default function SponsorDeliverablesPage() {
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
@@ -23,42 +12,14 @@ export default function SponsorDeliverablesPage() {
   const [feedback, setFeedback] = useState('');
 
   const fetchDeliverables = async () => {
-    // Mock data
-    const mockDeliverables: Deliverable[] = [
-      {
-        id: '1',
-        matchId: 'match-1',
-        organizerName: 'Tech Summit Team',
-        eventName: 'Tech Innovation Summit 2024',
-        title: 'Social Media Posts',
-        description: 'Post 3 times on Instagram with sponsor logo',
-        status: 'submitted',
-        proofUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800',
-        submittedAt: new Date(),
-      },
-      {
-        id: '2',
-        matchId: 'match-1',
-        organizerName: 'Tech Summit Team',
-        eventName: 'Tech Innovation Summit 2024',
-        title: 'Banner Display',
-        description: 'Display sponsor banner at event entrance',
-        status: 'approved',
-        proofUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-        submittedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      },
-      {
-        id: '3',
-        matchId: 'match-2',
-        organizerName: 'Music Fest Organizers',
-        eventName: 'Spring Music Festival',
-        title: 'Logo on Website',
-        description: 'Add sponsor logo to event website',
-        status: 'pending',
-      },
-    ];
-    setDeliverables(mockDeliverables);
-    setLoading(false);
+    try {
+      const data = await deliverablesApi.getDeliverables('sponsor');
+      setDeliverables(data);
+    } catch (error) {
+      console.error('Failed to fetch deliverables:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -66,11 +27,19 @@ export default function SponsorDeliverablesPage() {
   }, []);
 
   const handleApprove = async (deliverableId: string) => {
-    setDeliverables(deliverables.map(d =>
-      d.id === deliverableId ? { ...d, status: 'approved', feedback } : d
-    ));
-    setSelectedDeliverable(null);
-    setFeedback('');
+    try {
+      await deliverablesApi.updateStatus(deliverableId, 'approved', feedback);
+
+      // Update local state
+      setDeliverables(deliverables.map(d =>
+        d.id === deliverableId ? { ...d, status: 'approved', feedback } : d
+      ));
+      setSelectedDeliverable(null);
+      setFeedback('');
+    } catch (error) {
+      console.error('Failed to approve deliverable:', error);
+      alert('Failed to approve deliverable');
+    }
   };
 
   const handleReject = async (deliverableId: string) => {
@@ -78,11 +47,20 @@ export default function SponsorDeliverablesPage() {
       alert('Please provide feedback for rejection');
       return;
     }
-    setDeliverables(deliverables.map(d =>
-      d.id === deliverableId ? { ...d, status: 'rejected', feedback } : d
-    ));
-    setSelectedDeliverable(null);
-    setFeedback('');
+
+    try {
+      await deliverablesApi.updateStatus(deliverableId, 'rejected', feedback);
+
+      // Update local state
+      setDeliverables(deliverables.map(d =>
+        d.id === deliverableId ? { ...d, status: 'rejected', feedback } : d
+      ));
+      setSelectedDeliverable(null);
+      setFeedback('');
+    } catch (error) {
+      console.error('Failed to reject deliverable:', error);
+      alert('Failed to reject deliverable');
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -190,7 +168,7 @@ export default function SponsorDeliverablesPage() {
           <div className="glass-card max-w-2xl w-full max-w-[95vw] sm:max-w-2xl p-4 sm:p-6 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">{selectedDeliverable.title}</h2>
             <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{selectedDeliverable.description}</p>
-            
+
             {selectedDeliverable.proofUrl && (
               <img
                 src={selectedDeliverable.proofUrl}
