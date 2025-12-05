@@ -3,17 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Upload, CheckCircle, Clock, XCircle } from 'lucide-react';
 
-interface Deliverable {
-  id: string;
-  matchId: string;
-  sponsorName: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'submitted' | 'approved' | 'rejected';
-  proofUrl?: string;
-  feedback?: string;
-  dueDate: Date;
-}
+
+
+import { deliverablesApi } from '@/lib/api/deliverables';
+import { Deliverable } from '@/types/deliverable';
 
 export default function OrganizerDeliverablesPage() {
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
@@ -21,40 +14,14 @@ export default function OrganizerDeliverablesPage() {
   const [uploadingId, setUploadingId] = useState<string | null>(null);
 
   const fetchDeliverables = async () => {
-    // Mock data
-    const mockDeliverables: Deliverable[] = [
-      {
-        id: '1',
-        matchId: 'match-1',
-        sponsorName: 'TechCorp Inc.',
-        title: 'Social Media Posts',
-        description: 'Post 3 times on Instagram with sponsor logo',
-        status: 'pending',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      },
-      {
-        id: '2',
-        matchId: 'match-1',
-        sponsorName: 'TechCorp Inc.',
-        title: 'Banner Display',
-        description: 'Display sponsor banner at event entrance',
-        status: 'submitted',
-        proofUrl: 'https://example.com/proof.jpg',
-        dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      },
-      {
-        id: '3',
-        matchId: 'match-2',
-        sponsorName: 'Innovation Labs',
-        title: 'Logo on Website',
-        description: 'Add sponsor logo to event website',
-        status: 'approved',
-        proofUrl: 'https://example.com/proof2.jpg',
-        dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      },
-    ];
-    setDeliverables(mockDeliverables);
-    setLoading(false);
+    try {
+      const data = await deliverablesApi.getDeliverables('organizer');
+      setDeliverables(data);
+    } catch (error) {
+      console.error('Failed to fetch deliverables:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -63,16 +30,23 @@ export default function OrganizerDeliverablesPage() {
 
   const handleFileUpload = async (deliverableId: string, file: File) => {
     setUploadingId(deliverableId);
-    
-    // Simulate upload
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setDeliverables(deliverables.map(d => 
-      d.id === deliverableId 
-        ? { ...d, status: 'submitted', proofUrl: URL.createObjectURL(file) }
-        : d
-    ));
-    setUploadingId(null);
+
+    try {
+      const publicUrl = await deliverablesApi.uploadProof(deliverableId, file);
+
+      if (publicUrl) {
+        setDeliverables(deliverables.map(d =>
+          d.id === deliverableId
+            ? { ...d, status: 'submitted', proofUrl: publicUrl }
+            : d
+        ));
+      }
+    } catch (error) {
+      console.error('Failed to upload proof:', error);
+      alert('Failed to upload proof. Please try again.');
+    } finally {
+      setUploadingId(null);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -157,11 +131,10 @@ export default function OrganizerDeliverablesPage() {
                     />
                     <label
                       htmlFor={`file-${deliverable.id}`}
-                      className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl cursor-pointer transition-all text-sm sm:text-base touch-manipulation ${
-                        uploadingId === deliverable.id
-                          ? 'bg-gray-300 cursor-not-allowed'
-                          : 'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white hover:shadow-lg'
-                      }`}
+                      className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl cursor-pointer transition-all text-sm sm:text-base touch-manipulation ${uploadingId === deliverable.id
+                        ? 'bg-gray-300 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white hover:shadow-lg'
+                        }`}
                     >
                       <Upload size={16} className="sm:w-5 sm:h-5" />
                       {uploadingId === deliverable.id ? 'Uploading...' : 'Upload Proof'}

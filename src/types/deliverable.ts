@@ -1,4 +1,4 @@
-export type DeliverableStatus = 'pending' | 'uploaded' | 'approved' | 'rejected';
+export type DeliverableStatus = 'pending' | 'submitted' | 'approved' | 'rejected';
 
 export interface Deliverable {
   id: string;
@@ -7,7 +7,11 @@ export interface Deliverable {
   description: string;
   proofUrl?: string;
   status: DeliverableStatus;
-  notes?: string;
+  feedback?: string;
+  dueDate: Date;
   createdAt: Date;
   updatedAt: Date;
+  // Joined fields
+  sponsorName?: string;
+  eventName?: string;
 }
