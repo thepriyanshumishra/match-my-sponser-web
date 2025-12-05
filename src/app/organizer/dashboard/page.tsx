@@ -23,6 +23,7 @@ const staggerContainer = {
 };
 
 import { analyticsApi } from "@/lib/api/analytics";
+import { eventsApi } from "@/lib/api/events";
 
 export default function OrganizerDashboard() {
   const router = useRouter();
@@ -61,6 +62,24 @@ export default function OrganizerDashboard() {
     const event = events.find(e => e.id === eventId);
     if (event) {
       alert(`Event: ${event.name}\nLocation: ${event.location}\nDate: ${new Date(event.date).toLocaleDateString()}\nAudience: ${event.audienceSize} people`);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await eventsApi.deleteEvent(eventId);
+
+      // Update state
+      setEvents(events.filter(e => e.id !== eventId));
+      setStats(prev => ({ ...prev, totalEvents: prev.totalEvents - 1 }));
+
+    } catch (error) {
+      console.error("Failed to delete event:", error);
+      alert("Failed to delete event. Please try again.");
     }
   };
 
@@ -164,6 +183,7 @@ export default function OrganizerDashboard() {
                 <EventCard
                   event={event}
                   onClick={() => handleEventClick(event.id)}
+                  onDelete={() => handleDeleteEvent(event.id)}
                   showMatchScore={false}
                 />
               </motion.div>
